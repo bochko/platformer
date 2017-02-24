@@ -166,9 +166,9 @@ public class Core extends GameCore
         tmap.draw(g,xo,yo);    
         
         // Show score and status information
-        String msg = String.format("Score: %d", total/100);
+        /*String msg = String.format("Score: %d", total/100);
         g.setColor(Color.darkGray);
-        g.drawString(msg, getWidth() - 80, 50);
+        g.drawString(msg, getWidth() - 80, 50);*/
     }
 
     /**

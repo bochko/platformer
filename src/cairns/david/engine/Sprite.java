@@ -354,8 +354,10 @@ public class Sprite {
     	yoff = y;
     }
 
-
+// to be deleted when implementation of game.actors.Player is
+    // applied to game.
     public Rectangle.Float getBounds() {
+
         return new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
 
     }

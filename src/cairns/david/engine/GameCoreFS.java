@@ -36,7 +36,7 @@ public abstract class GameCoreFS {
     /** Sets full screen mode and initiates and objects.    */
     public void init() {
         screen = new ScreenManager();
-        DisplayMode displayMode = new DisplayMode(1024,768,32,0);
+        DisplayMode displayMode = new DisplayMode(512,384,32,0);
         screen.setFullScreen(displayMode);
 
         Window window = screen.getFullScreenWindow();
