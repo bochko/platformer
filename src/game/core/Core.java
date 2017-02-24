@@ -2,10 +2,17 @@ package game.core;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import cairns.david.engine.*;
+import game.actors.Player;
 import game.collision.CollisionEngine;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 // Game demonstrates how we can override the GameCore class
 // to create our own 'game'. We usually need to implement at
@@ -45,7 +52,7 @@ public class Core extends GameCore
     private Animation robot_right_anim;
     private Animation robot_left_anim;
     
-    private Sprite player = null;
+    private Player player = null;
     private ArrayList<Sprite> clouds = new ArrayList<Sprite>();
 
     private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
@@ -72,7 +79,8 @@ public class Core extends GameCore
      * create animations, register event handlers
      */
     public void init()
-    {         
+    {
+
         Sprite s;	// Temporary reference to a sprite
 
         // Load the tile map and print it out so we can check it is valid
@@ -91,7 +99,7 @@ public class Core extends GameCore
         robot_right_anim.loadAnimationFromSheet("images/robot_right_anim.PNG", 6, 1, 60);
         
         // Initialise the player with an animation
-        player = new Sprite(robot_idle_anim);
+        player = new Player(robot_idle_anim, 100, 0.08f);
         
         // Load a single cloud animation
         Animation ca = new Animation();
@@ -124,18 +132,21 @@ public class Core extends GameCore
     	total = 0;
     	      
         player.setX(64);
-        player.setY(280);
+        player.setY(132);
         player.setVelocityX(0.0f);
-        player.setVelocityY(0);
+        player.setVelocityY(0.0f);
         player.show();
     }
     
     /**
      * Draw the current state of the game
      */
+    @Override
     public void draw(Graphics2D g)
-    {    	
-    	// Be careful about the order in which you draw objects - you
+    {
+        Image background = new ImageIcon("images/galaxy.png").getImage();
+
+        // Be careful about the order in which you draw objects - you
     	// should draw the background first, then work your way 'forward'
 
     	// First work out how much we need to shift the view 
@@ -147,9 +158,10 @@ public class Core extends GameCore
         // it is relative to the player
 
         // ...?
+        g.drawImage(background, 0, 0, null);
         
-        g.setColor(Color.white);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        //g.setColor(Color.white);
+        //g.fillRect(0, 0, getWidth(), getHeight());
         
         // Apply offsets to sprites then draw them
         for (Sprite s: clouds)
@@ -158,12 +170,14 @@ public class Core extends GameCore
         	s.draw(g);
         }
 
-        // Apply offsets to player and draw 
-        player.setOffsets(xo, yo);
-        player.draw(g);
+
                 
         // Apply offsets to tile map and draw  it
-        tmap.draw(g,xo,yo);    
+        tmap.draw(g,xo,yo);
+
+        // Apply offsets to player and draw
+        player.setOffsets(xo, yo);
+        player.draw(g);
         
         // Show score and status information
         /*String msg = String.format("Score: %d", total/100);
@@ -185,6 +199,7 @@ public class Core extends GameCore
     	 */
 
        	player.setAnimationSpeed(1.0f);
+       	/*
        	// DELTAX DELTAY SYSTEM ALERT DEFCON ALPHA OPTIMUS
         float temp_dx = 0;
         float temp_dy = 0;
@@ -219,7 +234,7 @@ public class Core extends GameCore
     //        if((temp_dx > 0 && temp_dx < 0.0001)|| (temp_dx < 0 && temp_dx > -0.0001)) temp_dx = 0f;
       //  if((temp_dy > 0 && temp_dy < 0.0001)|| (temp_dy < 0 && temp_dy > -0.0001)) temp_dy = 0f;
 
-        int collision_type = CollisionEngine.checkBoundsReturnType(player, tmap, temp_dx, temp_dy, elapsed);
+        int collision_type = CollisionEngine.checkSimpleCollision(player, tmap, temp_dx, temp_dy, elapsed);
 
         // Set sprite velocity according to delta values calculated and collision type
         if (collision_type == CollisionEngine.COLLISION_NONE) {
@@ -239,11 +254,12 @@ public class Core extends GameCore
                 player.stop();
             }
         }
-
+*/
+       	player.buildMovement(tmap, elapsed, player_left, player_right, player_up, player_down);
 
        	// Log angle of movement
-        float angle_deg = xydiffcalc.getAngleFromDxDy(temp_dx, temp_dy);
-        System.out.println("angle(deg): " + angle_deg + " dx: " + temp_dx + " dy: " + temp_dy);
+        // float angle_deg = xydiffcalc.getAngleFromDxDy(temp_dx, temp_dy);
+        // System.out.println("angle(deg): " + angle_deg + " dx: " + temp_dx + " dy: " + temp_dy);
 
         // CHANGE SPRITE ANIMATIONS
 

@@ -23,24 +23,23 @@ public class CollisionEngine {
 
     /***
      *
-     * @param entity
-     * @param tilemap
-     * @param delta_x
-     * @param delta_y
+     * Simple collision check, made to rule out collision based on the Rectangle.intersects() mechanism
+     * Goes into complex collision checking if it detects any.
+     * @param entity to check collision with tilemap for
+     * @param tilemap context of entity
+     * @param delta_x delta_x proposal of entity
+     * @param delta_y delta_y proposal of entity
      * @return COLLISION_NONE = -1 / COLLISION_X_AXIS = 0; / COLLISION_Y_AXIS = 1;
      */
 
-    // THE METHOD ALSO HAS TO TAKE IN THE TIME ELAPSED VARIABLE AND TAKE IT IN ACCOUNT
-    // ITS EXECUTION SHOULD PROBABLY BE IN THE SPRITE CLASS
-    public static int checkBoundsReturnType(Sprite entity, TileMap tilemap, float delta_x, float delta_y, long elapsed) {
-
-
+    // TODO -> complex collision checking
+    public static int checkSimpleCollision(Collidable entity, TileMap tilemap, float delta_x, float delta_y, long elapsed) {
         // get entity bounds
-        Rectangle.Float entity_bounds = entity.getBounds();
+        Rectangle.Float entity_bounds = entity.getCollisionBounds();
 
         // get entity x+Δx & y+Δy
-        float anticipated_x = entity.getX() + delta_x*elapsed;
-        float anticipated_y = entity.getY() + delta_y*elapsed;
+        float anticipated_x = (float) entity_bounds.getX() + delta_x * elapsed;
+        float anticipated_y = (float) entity_bounds.getY() + delta_y * elapsed;
 
         // raise no flags for collision
         boolean collision_x_axis = false;
@@ -62,7 +61,7 @@ public class CollisionEngine {
                         x_transposed_bounds.intersects(
                                 new Rectangle.Float(tileArray[k][i].getXC(), tileArray[k][i].getYC(), tilemap.getTileWidth(), tilemap.getTileHeight()))
                                 &&
-                                !tile_character.equals(".")
+                                tile_character.equals(".")
                         ) {
                     // flip collision on x axis
                     collision_x_axis = true;
@@ -76,7 +75,7 @@ public class CollisionEngine {
                         y_transposed_bounds.intersects(
                                 new Rectangle.Float(tileArray[k][i].getXC(), tileArray[k][i].getYC(), tilemap.getTileWidth(), tilemap.getTileHeight()))
                                 &&
-                                !tile_character.equals(".")
+                                tile_character.equals(".")
                         ) {
                     // flip collision on y axis
                     collision_y_axis = true;
@@ -107,9 +106,10 @@ public class CollisionEngine {
         }
     }
 
-
-    public static boolean checkBounds(Sprite entity, Tile[][] tiles, double delta_x, double delta_y) {
-        return false;
+    private boolean complexCollisionCheck(Collidable entity, TileMap context, float delta_x, float delta_y, long elapsed) {
+        // TODO -> implement complex collision
+        return true;
     }
+
 }
 

@@ -13,4 +13,8 @@ public interface Collidable {
      * @return a Rectangle.Float to serve as collision bounds
      */
     Rectangle.Float getCollisionBounds();
+
+    float getX();
+
+    float getY();
 }

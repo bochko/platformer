@@ -35,8 +35,6 @@ public class Player extends Sprite implements Collidable {
 
     private Velocity velocity;
 
-    private Rectangle.Float collision_bounds;
-
     /***
      * Creates a new Sprite object with the specified Animation,
      * health points, and base movement speed.
@@ -56,7 +54,7 @@ public class Player extends Sprite implements Collidable {
         // initialize velocity class to use
         velocity = new Velocity();
         // create the collision bounds of the sprite
-        collision_bounds = new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
+
 
     }
 
@@ -104,8 +102,8 @@ public class Player extends Sprite implements Collidable {
             temp_dy += (float)velocity.getdy();
         }
 
-        int collision_type = CollisionEngine.checkBoundsReturnType(this, context, temp_dx, temp_dy, time_elapsed);
-
+        int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed);
+        System.out.println("" + collision_type);
         // Set sprite velocity according to delta values calculated and collision type
         if (collision_type == CollisionEngine.COLLISION_NONE) {
             super.setVelocityX(temp_dx);
@@ -119,9 +117,11 @@ public class Player extends Sprite implements Collidable {
             if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
                 super.setVelocityX(temp_dx);
                 super.setVelocityY(0f);
+
             }
             if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
                 super.stop();
+
             }
         }
 
@@ -129,9 +129,9 @@ public class Player extends Sprite implements Collidable {
 
     /***
      * expells a Projectile
-     * @param projectile
-     * @param mouse_x
-     * @param mouse_y
+     * @param projectile a projectile class, created anew
+     * @param mouse_x the x position of the mouse, respective to the graphics2D context
+     * @param mouse_y the y position of the mouse, respective to the graphics2D context
      */
     public void expelProjectile(Projectile projectile, float mouse_x, float mouse_y) {
         // TODO expel projectile according to the mouse position with origin x, y the sprite centre
@@ -144,6 +144,7 @@ public class Player extends Sprite implements Collidable {
      */
     @Override
     public Rectangle.Float getCollisionBounds() {
+        Rectangle.Float collision_bounds = new Rectangle.Float(getX() + 5.0f, getY() + 20.0f, getWidth() - 10.0f, getHeight() - 20.0f);
         return collision_bounds;
     }
 
@@ -154,7 +155,6 @@ public class Player extends Sprite implements Collidable {
     public void setSpeed_multiplier(float speed_multiplier) {
         this.speed_multiplier = speed_multiplier;
     }
-
 
     public float getBase_movement_speed() {
         return base_movement_speed;

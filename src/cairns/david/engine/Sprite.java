@@ -50,7 +50,7 @@ public class Sprite {
     public Sprite(Animation anim) {
         this.anim = anim;
         render = false;
-        scale = 1.0f;
+        scale = 4.0f;
         rotation = 0.0f;
     }
 
