@@ -34,8 +34,8 @@ public class Core extends GameCore
 	static int SCREEN_WIDTH = 512;
     static int SCREEN_HEIGHT = 384;
 
-    float 	lift = 0.0f;
-    float	gravity = 0.0f;
+    float lift = 0.0f;
+    float gravity = 0.1f;
 
     /* Velocity instance, added to calculate delta-x and delta-y,
     according to button presses, instead of hardcoding movement */
@@ -104,18 +104,6 @@ public class Core extends GameCore
         // Load a single cloud animation
         Animation ca = new Animation();
         ca.addFrame(loadImage("images/cloud.png"), 1000);
-        
-        // Create 3 clouds at random positions off the screen
-        // to the right
-        for (int c=0; c<3; c++)
-        {
-        	s = new Sprite(ca);
-        	s.setX(SCREEN_WIDTH + (int)(Math.random()*200.0f));
-        	s.setY(30 + (int)(Math.random()*150.0f));
-        	s.setVelocityX(-0.02f);
-        	s.show();
-        	clouds.add(s);
-        }
 
         initialiseGame();
       		
@@ -129,8 +117,6 @@ public class Core extends GameCore
      */
     public void initialiseGame()
     {
-    	total = 0;
-    	      
         player.setX(64);
         player.setY(132);
         player.setVelocityX(0.0f);
@@ -199,63 +185,7 @@ public class Core extends GameCore
     	 */
 
        	player.setAnimationSpeed(1.0f);
-       	/*
-       	// DELTAX DELTAY SYSTEM ALERT DEFCON ALPHA OPTIMUS
-        float temp_dx = 0;
-        float temp_dy = 0;
-        xydiffcalc.setVelocity(0.0, 0.0);
-
-       	if (player_up) {
-            xydiffcalc.setVelocity(0.08f, 270);
-            temp_dx += (float)xydiffcalc.getdx();
-            temp_dy += (float)xydiffcalc.getdy();
-
-       	}
-
-       	if (player_right) {
-            xydiffcalc.setVelocity(0.08f, 0);
-            temp_dx += (float)xydiffcalc.getdx();
-            temp_dy += (float)xydiffcalc.getdy();
-        }
-
-        if (player_left) {
-            xydiffcalc.setVelocity(0.08f, 180);
-            temp_dx += (float)xydiffcalc.getdx();
-            temp_dy += (float)xydiffcalc.getdy();
-        }
-
-        if (player_down) {
-            xydiffcalc.setVelocity(0.08f, 90);
-            temp_dx += (float)xydiffcalc.getdx();
-            temp_dy += (float)xydiffcalc.getdy();
-        }
-        // ROUND DX and DY for the sake of my sanity to 5 digits after decimal
-
-    //        if((temp_dx > 0 && temp_dx < 0.0001)|| (temp_dx < 0 && temp_dx > -0.0001)) temp_dx = 0f;
-      //  if((temp_dy > 0 && temp_dy < 0.0001)|| (temp_dy < 0 && temp_dy > -0.0001)) temp_dy = 0f;
-
-        int collision_type = CollisionEngine.checkSimpleCollision(player, tmap, temp_dx, temp_dy, elapsed);
-
-        // Set sprite velocity according to delta values calculated and collision type
-        if (collision_type == CollisionEngine.COLLISION_NONE) {
-            player.setVelocityX(temp_dx);
-            player.setVelocityY(temp_dy);
-        } else {
-            if(collision_type == CollisionEngine.COLLISION_X_AXIS) {
-                player.setVelocityY(temp_dy);
-                player.setVelocityX(0f);
-
-            }
-            if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
-                player.setVelocityX(temp_dx);
-                player.setVelocityY(0f);
-            }
-            if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
-                player.stop();
-            }
-        }
-*/
-       	player.buildMovement(tmap, elapsed, player_left, player_right, player_up, player_down);
+       	player.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
 
        	// Log angle of movement
         // float angle_deg = xydiffcalc.getAngleFromDxDy(temp_dx, temp_dy);
