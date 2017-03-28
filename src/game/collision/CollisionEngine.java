@@ -31,8 +31,6 @@ public class CollisionEngine {
      * @param delta_y delta_y proposal of entity
      * @return COLLISION_NONE = -1 / COLLISION_X_AXIS = 0; / COLLISION_Y_AXIS = 1;
      */
-
-    // TODO -> complex collision checking
     public static int checkSimpleCollision(Collidable entity, TileMap tilemap, float delta_x, float delta_y, long elapsed) {
         // get entity bounds
         Rectangle.Float entity_bounds = entity.getCollisionBounds();
@@ -105,11 +103,5 @@ public class CollisionEngine {
             }
         }
     }
-
-    private boolean complexCollisionCheck(Collidable entity, TileMap context, float delta_x, float delta_y, long elapsed) {
-        // TODO -> implement complex collision
-        return true;
-    }
-
 }
 

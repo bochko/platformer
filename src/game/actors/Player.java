@@ -6,6 +6,7 @@ import cairns.david.engine.TileMap;
 import cairns.david.engine.Velocity;
 import game.collision.Collidable;
 import game.collision.CollisionEngine;
+import game.physics.JumpCalc;
 
 import java.awt.*;
 
@@ -21,7 +22,8 @@ import java.awt.*;
 public class Player extends Sprite implements Collidable {
 
     public static final int DEFAULT_BASE_DAMAGE = 25;
-    public static final int DEFAULT_SPEED_MULTIPLIER = 1;
+    public static final int DEFAULT_SPEED_MULTIPLIER = 2;
+    public static final int DEFAULT_JUMP_HEIGHT_PX = 32;
 
     private float health_points;
 
@@ -70,10 +72,11 @@ public class Player extends Sprite implements Collidable {
      * @param up boolean value that indicates if the up direction is activated
      * @param down boolean value that indicates if the down direction is activated
      */
-    public void buildMovement(TileMap context, Long time_elapsed, boolean left, boolean right, boolean up, boolean down) {
+    public void buildMovement(TileMap context, Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
 
         float temp_dx = 0;
         float temp_dy = 0;
+        float curr_gravity_pull = 0;
 
         velocity.setVelocity(0.0, 0.0);
 
@@ -100,6 +103,18 @@ public class Player extends Sprite implements Collidable {
             velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 90);
             temp_dx += (float)velocity.getdx();
             temp_dy += (float)velocity.getdy();
+        }
+
+            velocity.setVelocity(gravity * 1, 90);
+            temp_dy += (float)velocity.getdy();
+            curr_gravity_pull = (float)velocity.getdy();
+
+
+        if (true) {
+            JumpCalc.reInitJump(curr_gravity_pull, this);
+            temp_dy += JumpCalc.calculateResidualJump(time_elapsed);
+        } else /*if no new jumps performed calc any residual force*/ {
+            temp_dy += JumpCalc.calculateResidualJump(time_elapsed);
         }
 
         int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed);
@@ -146,6 +161,10 @@ public class Player extends Sprite implements Collidable {
     public Rectangle.Float getCollisionBounds() {
         Rectangle.Float collision_bounds = new Rectangle.Float(getX() + 5.0f, getY() + 20.0f, getWidth() - 10.0f, getHeight() - 20.0f);
         return collision_bounds;
+    }
+
+    public int getJumpHeight() {
+        return DEFAULT_JUMP_HEIGHT_PX;
     }
 
     public float getSpeed_multiplier() {
