@@ -166,10 +166,10 @@ public class Core extends GameCore implements MouseListener
         // it is relative to the playerEntity
 
         // ...?
-        g.drawImage(background, 0, 0, null);
+        //g.drawImage(background, 0, 0, null);
         
-        //g.setColor(Color.white);
-        //g.fillRect(0, 0, getWidth(), getHeight());
+        g.setColor(Color.black);
+        g.fillRect(0, 0, getWidth(), getHeight());
         
         // Apply offsets to sprites then draw them
         for (Sprite s: clouds)

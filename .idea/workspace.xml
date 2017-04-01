@@ -2,20 +2,29 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4934efc3-6b0e-466e-88e1-4350fa22e781" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sounds/soundtrack/mainmenu.wav" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sounds/soundtrack/mainmenu.sources" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/game/actors/mechanics/Ambulatory.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/ConsumableEntity.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/Player.class" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/game/actors/ConsumableEntity.java" afterPath="$PROJECT_DIR$/src/game/actors/consumable/ConsumableEntity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/game/actors/Player.java" afterPath="$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/game/actors/Projectile.java" afterPath="$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_bot_left_powercore_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_bot_metalplate_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_bot_right_powercore_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_left_generic_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_left_powercore_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_mid_computer_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_mid_generic_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_mid_mesh_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_mid_metalplate_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_right_generic_wall.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/maps/tile_right_powercore_wall.png" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/pipe.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/pipebot.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/pipetop.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/tile_glass_ground.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/tile_glass_ground_corner_bleft.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/tile_glass_ground_corner_bright.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/tile_glass_ground_corner_tleft.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/maps/tile_glass_ground_corner_tright.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cairns/david/engine/Sprite.java" afterPath="$PROJECT_DIR$/src/cairns/david/engine/Sprite.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" afterPath="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/actors/enemy/EnemyMove.java" afterPath="$PROJECT_DIR$/src/game/actors/enemy/EnemyMove.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/maps/map.txt" afterPath="$PROJECT_DIR$/maps/map.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/core/Core.java" afterPath="$PROJECT_DIR$/src/game/core/Core.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/levels/LevelBundle.java" afterPath="$PROJECT_DIR$/src/game/levels/LevelBundle.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" afterPath="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -31,8 +40,8 @@
       <file leaf-file-name="Core.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/core/Core.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2214">
-              <caret line="335" column="0" lean-forward="true" selection-start-line="335" selection-start-column="0" selection-end-line="335" selection-end-column="0" />
+            <state relative-caret-position="216">
+              <caret line="170" column="30" lean-forward="false" selection-start-line="170" selection-start-column="30" selection-end-line="170" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -48,14 +57,34 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EnemyEntity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="EnemyEntity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1183">
-              <caret line="159" column="0" lean-forward="true" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
+            <state relative-caret-position="1768">
+              <caret line="134" column="0" lean-forward="false" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="map.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/maps/map.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="36">
+              <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CollisionEngine.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/physics/CollisionEngine.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="396">
+              <caret line="73" column="33" lean-forward="false" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -86,7 +115,6 @@
         <option value="$PROJECT_DIR$/src/game/physics/fannytickler.java" />
         <option value="$PROJECT_DIR$/src/game/physics/JumpCalc.java" />
         <option value="$PROJECT_DIR$/src/game/actors/ConsumableEntity.java" />
-        <option value="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" />
         <option value="$PROJECT_DIR$/src/game/physics/Collidable.java" />
         <option value="$PROJECT_DIR$/src/game/actors/EnemyEntity.java" />
         <option value="$PROJECT_DIR$/src/game/actors/Player.java" />
@@ -98,9 +126,11 @@
         <option value="$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java" />
         <option value="$PROJECT_DIR$/src/game/actors/mechanics/Ambulatory.java" />
         <option value="$PROJECT_DIR$/sounds/soundtrack/mainmenu.sources" />
-        <option value="$PROJECT_DIR$/src/game/core/Core.java" />
         <option value="$PROJECT_DIR$/src/game/actors/enemy/EnemyMove.java" />
         <option value="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" />
+        <option value="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" />
+        <option value="$PROJECT_DIR$/src/game/core/Core.java" />
+        <option value="$PROJECT_DIR$/maps/map.txt" />
       </list>
     </option>
   </component>
@@ -401,6 +431,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="maps" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cscu9n6_game_assignment" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cscu9n6_game_assignment" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="images" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -435,6 +479,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/maps" />
       <recent name="$PROJECT_DIR$/sounds/soundtrack" />
       <recent name="$PROJECT_DIR$/images" />
     </key>
@@ -885,15 +930,16 @@
       <workItem from="1490821097181" duration="9386000" />
       <workItem from="1490874336722" duration="1549000" />
       <workItem from="1490977060218" duration="10502000" />
-      <workItem from="1491003581633" duration="15428000" />
+      <workItem from="1491003581633" duration="17929000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58010000" />
+    <option name="totallyTimeSpent" value="60511000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="-11" width="1922" height="1092" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -910,7 +956,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25885418" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25885418" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3292683" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -974,14 +1020,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/Sprite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="12" column="13" lean-forward="false" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/game/actors/consumable/ConsumableEntity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -1267,14 +1305,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/physics/CollisionEngine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="33" column="68" lean-forward="false" selection-start-line="33" selection-start-column="68" selection-end-line="33" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/ScreenManager.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="486">
@@ -1333,11 +1363,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/core/Core.java">
+    <entry file="file://$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2214">
-          <caret line="335" column="0" lean-forward="true" selection-start-line="335" selection-start-column="0" selection-end-line="335" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="1768">
+          <caret line="134" column="0" lean-forward="false" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1349,13 +1381,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java">
+    <entry file="file://$PROJECT_DIR$/src/game/physics/CollisionEngine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1183">
-          <caret line="159" column="0" lean-forward="true" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="396">
+          <caret line="73" column="33" lean-forward="false" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/core/Core.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="170" column="30" lean-forward="false" selection-start-line="170" selection-start-column="30" selection-end-line="170" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/maps/map.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

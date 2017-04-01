@@ -57,7 +57,7 @@ public class CollisionEngine {
                         x_transposed_bounds.intersects(
                                 new Rectangle.Float(tileArray[k][i].getXC(), tileArray[k][i].getYC(), tilemap.getTileWidth(), tilemap.getTileHeight()))
                                 &&
-                                tile_character.equals(".")
+                                !tile_character.equals(".")
                         ) {
                     // flip collision on x axis
                     collision_x_axis = true;
@@ -71,7 +71,7 @@ public class CollisionEngine {
                         y_transposed_bounds.intersects(
                                 new Rectangle.Float(tileArray[k][i].getXC(), tileArray[k][i].getYC(), tilemap.getTileWidth(), tilemap.getTileHeight()))
                                 &&
-                                tile_character.equals(".")
+                                !tile_character.equals(".")
                         ) {
                     // flip collision on y axis
                     collision_y_axis = true;
