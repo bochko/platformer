@@ -1,7 +1,5 @@
-package game.collision;
+package game.physics;
 
-import cairns.david.engine.GameCore;
-import cairns.david.engine.Sprite;
 import cairns.david.engine.Tile;
 import cairns.david.engine.TileMap;
 

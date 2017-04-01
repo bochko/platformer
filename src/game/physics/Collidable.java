@@ -1,4 +1,4 @@
-package game.collision;
+package game.physics;
 
 import java.awt.*;
 
@@ -17,4 +17,8 @@ public interface Collidable {
     float getX();
 
     float getY();
+
+    int getWidth();
+
+    int getHeight();
 }

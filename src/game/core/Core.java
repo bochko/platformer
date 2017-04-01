@@ -2,16 +2,18 @@ package game.core;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import cairns.david.engine.*;
 import game.actors.Player;
-import game.collision.CollisionEngine;
+import game.actors.Projectile;
+import game.actors.enemy.EnemyEntity;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 // Game demonstrates how we can override the GameCore class
@@ -28,14 +30,14 @@ import javax.swing.*;
  */
 @SuppressWarnings("serial")
 
-public class Core extends GameCore
+public class Core extends GameCore implements MouseListener
 {
 	// Useful game constants
 	static int SCREEN_WIDTH = 512;
     static int SCREEN_HEIGHT = 384;
 
     float lift = 0.0f;
-    float gravity = 0.1f;
+    float gravity = 0.2f;
 
     /* Velocity instance, added to calculate delta-x and delta-y,
     according to button presses, instead of hardcoding movement */
@@ -51,9 +53,13 @@ public class Core extends GameCore
     private Animation robot_idle_anim;
     private Animation robot_right_anim;
     private Animation robot_left_anim;
+    private Animation enemy_green_anim;
     
     private Player player = null;
-    private ArrayList<Sprite> clouds = new ArrayList<Sprite>();
+    private EnemyEntity enemy = null;
+    private ArrayList<Sprite> clouds = new ArrayList<>();
+
+    private LinkedList<Projectile> projectiles = new LinkedList<>();
 
     private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
     
@@ -80,6 +86,10 @@ public class Core extends GameCore
      */
     public void init()
     {
+        // set cursor to a simple crosshair
+        setCursor(Cursor.CROSSHAIR_CURSOR);
+        // add itself as a mouse listener
+        this.addMouseListener(this);
 
         Sprite s;	// Temporary reference to a sprite
 
@@ -97,9 +107,15 @@ public class Core extends GameCore
 
         robot_right_anim = new Animation();
         robot_right_anim.loadAnimationFromSheet("images/robot_right_anim.PNG", 6, 1, 60);
+
+        enemy_green_anim = new Animation();
+        enemy_green_anim.loadAnimationFromSheet("images/green_alien_enemy.png", 1, 1, 60);
+
         
         // Initialise the player with an animation
         player = new Player(robot_idle_anim, 100, 0.08f);
+
+        enemy = new EnemyEntity(enemy_green_anim, 100, 0.04f);
         
         // Load a single cloud animation
         Animation ca = new Animation();
@@ -122,6 +138,12 @@ public class Core extends GameCore
         player.setVelocityX(0.0f);
         player.setVelocityY(0.0f);
         player.show();
+        enemy.setX(64);
+        enemy.setY(132);
+        enemy.setVelocityX(0.0f);
+        enemy.setVelocityY(0.0f);
+        enemy.show();
+
     }
     
     /**
@@ -164,6 +186,19 @@ public class Core extends GameCore
         // Apply offsets to player and draw
         player.setOffsets(xo, yo);
         player.draw(g);
+
+        enemy.setOffsets(xo, yo);
+        enemy.draw(g);
+
+        Iterator<Projectile> iter = projectiles.iterator();
+        synchronized (projectiles) {
+            while (iter.hasNext()) {
+                Projectile temp = iter.next();
+                temp.setOffsets(xo, yo);
+                temp.draw(g);
+            }
+        }
+
         
         // Show score and status information
         /*String msg = String.format("Score: %d", total/100);
@@ -186,6 +221,9 @@ public class Core extends GameCore
 
        	player.setAnimationSpeed(1.0f);
        	player.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
+
+       	enemy.setAnimationSpeed(1.0f);
+       	enemy.buildMovement(tmap, elapsed, gravity);
 
        	// Log angle of movement
         // float angle_deg = xydiffcalc.getAngleFromDxDy(temp_dx, temp_dy);
@@ -218,6 +256,15 @@ public class Core extends GameCore
        	
         // Now update the sprites animation and position
         player.update(elapsed);
+        enemy.update(elapsed);
+
+        ListIterator<Projectile> iter = projectiles.listIterator();
+        synchronized (projectiles) {
+            while (iter.hasNext()){
+                Projectile temp = iter.next();
+                temp.update(elapsed);
+            }
+        }
        
         // Then check for any collisions that may have occurred
         handleTileMapCollisions(player,elapsed);
@@ -301,4 +348,46 @@ public class Core extends GameCore
 			default :  break;
 		}
 	}
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
+        System.out.println("Cursor pos: " + x + y);
+        Animation proj_anim = new Animation();
+        proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
+        Projectile proj = new Projectile(proj_anim);
+        proj.setX(player.getX());
+        proj.setY(player.getY());
+        double angle = xydiffcalc.getAngle(proj.getX(), proj.getY(), x, y);
+        xydiffcalc.setVelocity(0.5f, angle);
+        proj.setVelocityX((float)xydiffcalc.getdx());
+        proj.setVelocityY((float)xydiffcalc.getdy());
+        proj.show();
+
+        ListIterator<Projectile> iter = projectiles.listIterator();
+        synchronized (projectiles) {
+            iter.add(proj);
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

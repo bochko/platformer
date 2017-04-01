@@ -1,29 +1,32 @@
-package game.actors;
+package game.actors.enemy;
 
 import cairns.david.engine.Animation;
 import cairns.david.engine.Sprite;
 import cairns.david.engine.TileMap;
 import cairns.david.engine.Velocity;
+import game.actors.Player;
+import game.actors.Projectile;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
-/***
- * Player class extends the Sprite class;
- * adds a layer of functionality useful for the player
- * entity and player movement, and collision.
- *
- * @ author Boyan Atanasov
- * @ see cairns.david.engine.Sprite
+/**
+ * Created by boyan on 23/02/17.
  */
+public class EnemyEntity extends Sprite implements Collidable {
 
-public class Player extends Sprite implements Collidable {
+    private final int MOVEMENT_RADIUS = 1000;
+    private final int DETECTION_RADIUS = 600;
+    private float ORIGIN_X;
+    private float ORIGIN_Y;
 
-    public static final int DEFAULT_BASE_DAMAGE = 25;
-    public static final int DEFAULT_SPEED_MULTIPLIER = 2;
-    public static final int DEFAULT_JUMP_HEIGHT_PX = 32;
-    public static final int DEFAULT_JUMP_DURATION_MS = 500;
+    public static final int ENEMY_MOVEMENT_LEFT = 501;
+    public static final int ENEMY_MOVEMENT_RIGHT = 502;
+    public static final int ENEMY_NO_MOVEMENT = 999;
+    private int last_movement = ENEMY_NO_MOVEMENT;
 
     private float health_points;
 
@@ -41,14 +44,14 @@ public class Player extends Sprite implements Collidable {
     private Velocity jumping_velocity;
 
     /***
-     * Creates a new Sprite object with the specified Animation,
+     * Creates a new EnemyEntity object with the specified Animation,
      * health points, and base movement speed.
      *
      * @param anim The animation to use for the sprite.
      * @param health_points The initial and max health points of the player
      * @param base_movement_speed Player's base movement speed
      */
-    public Player(Animation anim, int health_points, float base_movement_speed) {
+    public EnemyEntity(Animation anim, int health_points, float base_movement_speed) {
         // call the super constructor
         super(anim);
         // initialize all properties
@@ -71,66 +74,21 @@ public class Player extends Sprite implements Collidable {
      *
      * @param context the TileMap the sprite is rendered on at the moment;
      * @param time_elapsed time elapsed since last frame in ms
-     * @param left boolean value that indicates if the left direction is activated
-     * @param right boolean value that indicates if the right direction is activated
-     * @param up boolean value that indicates if the up direction is activated
-     * @param down boolean value that indicates if the down direction is activated
      */
     @SuppressWarnings("Duplicates")
-    public void buildMovement(TileMap context, Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
+    public void buildMovement(TileMap context, Long time_elapsed, float gravity) {
 
         float temp_dx = 0;
         float temp_dy = 0;
-        float curr_gravity_pull;
 
-        if(this.getVelocityY() > 0) {
-            is_jumping = true;
-        }
+        EnemyMove new_move = simulateInput(context, time_elapsed);
 
-        movement_velocity.setVelocity(0.0, 0.0);
+        temp_dx += new_move.getDx();
+        temp_dy += new_move.getDy();
+        last_movement = new_move.getMove();
 
-        /*if (up) {
-            movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 270);
-            temp_dx += (float)movement_velocity.getdx();
-            temp_dy += (float)movement_velocity.getdy();
-
-        }*/
-
-        if (right) {
-            movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 0);
-            temp_dx += (float) movement_velocity.getdx();
-            temp_dy += (float) movement_velocity.getdy();
-        }
-
-        if (left) {
-            movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 180);
-            temp_dx += (float) movement_velocity.getdx();
-            temp_dy += (float) movement_velocity.getdy();
-        }
-
-        if (down) {
-            movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 90);
-            temp_dx += (float) movement_velocity.getdx();
-            temp_dy += (float) movement_velocity.getdy();
-        }
-
-        if (up) {
-            if(!is_jumping) {
-                is_jumping = true;
-                jumping_velocity.setVelocity(getBase_movement_speed() * 7, -90);
-            }
-        }
-
-        if (is_jumping) {
-            temp_dy += jumping_velocity.getdy();
-            jumping_velocity.setVelocity(jumping_velocity.getSpeed() /1.04, -90);
-        }
-
-            movement_velocity.setVelocity(gravity * 1, 90);
-            temp_dy += (float) movement_velocity.getdy();
-
-
-
+        movement_velocity.setVelocity(gravity * 1, 90);
+        temp_dy += (float) movement_velocity.getdy();
 
         int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed);
         // Set sprite movement_velocity according to delta values calculated and collision type
@@ -149,9 +107,9 @@ public class Player extends Sprite implements Collidable {
                 // if hitting anything on the y axis set the jumping movement_velocity to 0,
                 // and let gravity do its part
                 jumping_velocity.setVelocity(0, 0);
-                    if(temp_dy > 0) {
-                        is_jumping = false;
-                    }
+                if(temp_dy > 0) {
+                    is_jumping = false;
+                }
             }
             if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
 
@@ -161,8 +119,54 @@ public class Player extends Sprite implements Collidable {
                 }
             }
         }
-
     }
+
+    private EnemyMove simulateInput(TileMap context, Long time_elapsed) {
+        ArrayList<EnemyMove> possibleMoves = establishPossibleMoves(context, time_elapsed);
+        if(last_movement == ENEMY_NO_MOVEMENT) {
+            Random random = new Random();
+            return possibleMoves.get(random.nextInt(possibleMoves.size()));
+        } else {
+            for (EnemyMove move : possibleMoves) {
+                if(move.getMove() == last_movement) {
+                    return move;
+                }
+            }
+            Random random = new Random();
+            return possibleMoves.get(random.nextInt(possibleMoves.size()));
+        }
+    }
+
+    private ArrayList<EnemyMove> establishPossibleMoves(TileMap context, Long time_elapsed) {
+        ArrayList<EnemyMove> possible_moves = new ArrayList<>();
+        movement_velocity.setVelocity(0.0, 0.0);
+        float temp_dx;
+        float temp_dy;
+
+
+        // check if left movement causes collision
+        movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 180);
+        temp_dx = (float) movement_velocity.getdx();
+        temp_dy = (float) movement_velocity.getdy();
+
+        if(CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed)
+                == CollisionEngine.COLLISION_NONE) {
+            possible_moves.add(new EnemyMove(temp_dx, temp_dy, ENEMY_MOVEMENT_LEFT));
+        }
+
+        // check if right movement causes collision
+        movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 0);
+        temp_dx = (float) movement_velocity.getdx();
+        temp_dy = (float) movement_velocity.getdy();
+
+        if(CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed)
+                == CollisionEngine.COLLISION_NONE) {
+            possible_moves.add(new EnemyMove(temp_dx, temp_dy, ENEMY_MOVEMENT_RIGHT));
+        }
+
+        return possible_moves;
+    }
+
 
     /***
      * expells a Projectile
@@ -185,14 +189,6 @@ public class Player extends Sprite implements Collidable {
         return collision_bounds;
     }
 
-    public int getJumpHeight() {
-        return DEFAULT_JUMP_HEIGHT_PX;
-    }
-
-    public int getJumpTime() {
-        return DEFAULT_JUMP_DURATION_MS;
-    }
-
     public float getSpeed_multiplier() {
         return speed_multiplier;
     }
@@ -205,5 +201,16 @@ public class Player extends Sprite implements Collidable {
         return base_movement_speed;
     }
 
+    @Override
+    public void setX(float x) {
+        super.setX(x);
+        ORIGIN_X = x;
+    }
+
+    @Override
+    public void setY(float y) {
+        super.setY(y);
+        ORIGIN_Y = y;
+    }
 
 }
