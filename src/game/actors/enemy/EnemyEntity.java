@@ -4,8 +4,9 @@ import cairns.david.engine.Animation;
 import cairns.david.engine.Sprite;
 import cairns.david.engine.TileMap;
 import cairns.david.engine.Velocity;
-import game.actors.Player;
-import game.actors.Projectile;
+import game.actors.mechanics.Ambulatory;
+import game.actors.player.PlayerEntity;
+import game.actors.projectiles.Projectile;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
 
@@ -16,17 +17,15 @@ import java.util.Random;
 /**
  * Created by boyan on 23/02/17.
  */
-public class EnemyEntity extends Sprite implements Collidable {
+public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
 
     private final int MOVEMENT_RADIUS = 1000;
     private final int DETECTION_RADIUS = 600;
     private float ORIGIN_X;
     private float ORIGIN_Y;
 
-    public static final int ENEMY_MOVEMENT_LEFT = 501;
-    public static final int ENEMY_MOVEMENT_RIGHT = 502;
-    public static final int ENEMY_NO_MOVEMENT = 999;
-    private int last_movement = ENEMY_NO_MOVEMENT;
+
+    private int last_movement = EnemyMove.ENEMY_NO_MOVEMENT;
 
     private float health_points;
 
@@ -49,7 +48,7 @@ public class EnemyEntity extends Sprite implements Collidable {
      *
      * @param anim The animation to use for the sprite.
      * @param health_points The initial and max health points of the player
-     * @param base_movement_speed Player's base movement speed
+     * @param base_movement_speed PlayerEntity's base movement speed
      */
     public EnemyEntity(Animation anim, int health_points, float base_movement_speed) {
         // call the super constructor
@@ -57,8 +56,8 @@ public class EnemyEntity extends Sprite implements Collidable {
         // initialize all properties
         this.health_points = health_points;
         this.base_movement_speed = base_movement_speed;
-        this.speed_multiplier = Player.DEFAULT_SPEED_MULTIPLIER;
-        this.base_damage = Player.DEFAULT_BASE_DAMAGE;
+        this.speed_multiplier = PlayerEntity.DEFAULT_SPEED_MULTIPLIER;
+        this.base_damage = PlayerEntity.DEFAULT_BASE_DAMAGE;
         // initialize movement_velocity class to use
         movement_velocity = new Velocity();
         // create the collision bounds of the sprite
@@ -76,7 +75,7 @@ public class EnemyEntity extends Sprite implements Collidable {
      * @param time_elapsed time elapsed since last frame in ms
      */
     @SuppressWarnings("Duplicates")
-    public void buildMovement(TileMap context, Long time_elapsed, float gravity) {
+    public void buildMovement(TileMap context, Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
 
         float temp_dx = 0;
         float temp_dy = 0;
@@ -123,7 +122,7 @@ public class EnemyEntity extends Sprite implements Collidable {
 
     private EnemyMove simulateInput(TileMap context, Long time_elapsed) {
         ArrayList<EnemyMove> possibleMoves = establishPossibleMoves(context, time_elapsed);
-        if(last_movement == ENEMY_NO_MOVEMENT) {
+        if(last_movement == EnemyMove.ENEMY_NO_MOVEMENT) {
             Random random = new Random();
             return possibleMoves.get(random.nextInt(possibleMoves.size()));
         } else {
@@ -151,7 +150,7 @@ public class EnemyEntity extends Sprite implements Collidable {
 
         if(CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed)
                 == CollisionEngine.COLLISION_NONE) {
-            possible_moves.add(new EnemyMove(temp_dx, temp_dy, ENEMY_MOVEMENT_LEFT));
+            possible_moves.add(new EnemyMove(temp_dx, temp_dy, EnemyMove.ENEMY_MOVEMENT_LEFT));
         }
 
         // check if right movement causes collision
@@ -161,7 +160,7 @@ public class EnemyEntity extends Sprite implements Collidable {
 
         if(CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed)
                 == CollisionEngine.COLLISION_NONE) {
-            possible_moves.add(new EnemyMove(temp_dx, temp_dy, ENEMY_MOVEMENT_RIGHT));
+            possible_moves.add(new EnemyMove(temp_dx, temp_dy, EnemyMove.ENEMY_MOVEMENT_RIGHT));
         }
 
         return possible_moves;
@@ -212,5 +211,4 @@ public class EnemyEntity extends Sprite implements Collidable {
         super.setY(y);
         ORIGIN_Y = y;
     }
-
 }

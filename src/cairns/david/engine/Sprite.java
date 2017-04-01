@@ -354,16 +354,11 @@ public class Sprite {
     	yoff = y;
     }
 
-// to be deleted when implementation of game.actors.Player is
+// to be deleted when implementation of game.actors.player.PlayerEntity is
     // applied to game.
     public Rectangle.Float getBounds() {
 
         return new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
 
     }
-/*
-    public Rectangle getBounds(double dx, double dy) {
-        return new Rectangle((int)(getX() + dx), (int)(getY() + dy), getWidth(), getHeight());
-    }
-    */
 }

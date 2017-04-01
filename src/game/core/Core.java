@@ -10,8 +10,8 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import cairns.david.engine.*;
-import game.actors.Player;
-import game.actors.Projectile;
+import game.actors.player.PlayerEntity;
+import game.actors.projectiles.Projectile;
 import game.actors.enemy.EnemyEntity;
 
 import javax.swing.*;
@@ -55,7 +55,7 @@ public class Core extends GameCore implements MouseListener
     private Animation robot_left_anim;
     private Animation enemy_green_anim;
     
-    private Player player = null;
+    private PlayerEntity playerEntity = null;
     private EnemyEntity enemy = null;
     private ArrayList<Sprite> clouds = new ArrayList<>();
 
@@ -112,8 +112,8 @@ public class Core extends GameCore implements MouseListener
         enemy_green_anim.loadAnimationFromSheet("images/green_alien_enemy.png", 1, 1, 60);
 
         
-        // Initialise the player with an animation
-        player = new Player(robot_idle_anim, 100, 0.08f);
+        // Initialise the playerEntity with an animation
+        playerEntity = new PlayerEntity(robot_idle_anim, 100, 0.08f);
 
         enemy = new EnemyEntity(enemy_green_anim, 100, 0.04f);
         
@@ -133,11 +133,11 @@ public class Core extends GameCore implements MouseListener
      */
     public void initialiseGame()
     {
-        player.setX(64);
-        player.setY(132);
-        player.setVelocityX(0.0f);
-        player.setVelocityY(0.0f);
-        player.show();
+        playerEntity.setX(64);
+        playerEntity.setY(132);
+        playerEntity.setVelocityX(0.0f);
+        playerEntity.setVelocityY(0.0f);
+        playerEntity.show();
         enemy.setX(64);
         enemy.setY(132);
         enemy.setVelocityX(0.0f);
@@ -158,12 +158,12 @@ public class Core extends GameCore implements MouseListener
     	// should draw the background first, then work your way 'forward'
 
     	// First work out how much we need to shift the view 
-    	// in order to see where the player is.
+    	// in order to see where the playerEntity is.
         int xo = 0;
         int yo = 0;
 
         // If relative, adjust the offset so that
-        // it is relative to the player
+        // it is relative to the playerEntity
 
         // ...?
         g.drawImage(background, 0, 0, null);
@@ -183,9 +183,9 @@ public class Core extends GameCore implements MouseListener
         // Apply offsets to tile map and draw  it
         tmap.draw(g,xo,yo);
 
-        // Apply offsets to player and draw
-        player.setOffsets(xo, yo);
-        player.draw(g);
+        // Apply offsets to playerEntity and draw
+        playerEntity.setOffsets(xo, yo);
+        playerEntity.draw(g);
 
         enemy.setOffsets(xo, yo);
         enemy.draw(g);
@@ -216,14 +216,14 @@ public class Core extends GameCore implements MouseListener
     	
         // Make adjustments to the speed of the sprite due to gravity
         /*
-        player.setVelocityY(player.getVelocityY()+(gravity*elapsed));
+        playerEntity.setVelocityY(playerEntity.getVelocityY()+(gravity*elapsed));
     	 */
 
-       	player.setAnimationSpeed(1.0f);
-       	player.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
+       	playerEntity.setAnimationSpeed(1.0f);
+       	playerEntity.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
 
        	enemy.setAnimationSpeed(1.0f);
-       	enemy.buildMovement(tmap, elapsed, gravity);
+       	enemy.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
 
        	// Log angle of movement
         // float angle_deg = xydiffcalc.getAngleFromDxDy(temp_dx, temp_dy);
@@ -236,18 +236,18 @@ public class Core extends GameCore implements MouseListener
         if ((player_right || player_left) && !(player_right && player_left)) {
             // if control-right is pressed
             if(player_right) {
-                player.setAnimation(robot_right_anim);
+                playerEntity.setAnimation(robot_right_anim);
             }
             // else if control-left is presssed
             else if(player_left) {
-                player.setAnimation(robot_left_anim);
+                playerEntity.setAnimation(robot_left_anim);
             }
 
         }
         /* if neither control-right or control-left are pressed, then no movement on the
         x axis should occur. -> change the robot's animation to the bobbing one. */
         else {
-            player.setAnimation(robot_idle_anim);
+            playerEntity.setAnimation(robot_idle_anim);
         }
 
                 
@@ -255,7 +255,7 @@ public class Core extends GameCore implements MouseListener
        		s.update(elapsed);
        	
         // Now update the sprites animation and position
-        player.update(elapsed);
+        playerEntity.update(elapsed);
         enemy.update(elapsed);
 
         ListIterator<Projectile> iter = projectiles.listIterator();
@@ -267,7 +267,7 @@ public class Core extends GameCore implements MouseListener
         }
        
         // Then check for any collisions that may have occurred
-        handleTileMapCollisions(player,elapsed);
+        handleTileMapCollisions(playerEntity,elapsed);
          	
     }
 
@@ -283,16 +283,16 @@ public class Core extends GameCore implements MouseListener
     public void handleTileMapCollisions(Sprite s, long elapsed)
     {
     	// This method should check actual tile map collisions. For
-    	// now it just checks if the player has gone off the bottom
+    	// now it just checks if the playerEntity has gone off the bottom
     	// of the tile map.
     	
-        if (player.getY() + player.getHeight() > tmap.getPixelHeight())
+        if (playerEntity.getY() + playerEntity.getHeight() > tmap.getPixelHeight())
         {
-        	// Put the player back on the map
-        	player.setY(tmap.getPixelHeight() - player.getHeight());
+        	// Put the playerEntity back on the map
+        	playerEntity.setY(tmap.getPixelHeight() - playerEntity.getHeight());
         	
         	// and make them bounce
-        	player.setVelocityY(-player.getVelocityY() * (0.03f * elapsed));
+        	playerEntity.setVelocityY(-playerEntity.getVelocityY() * (0.03f * elapsed));
         }
     }
     
@@ -321,7 +321,7 @@ public class Core extends GameCore implements MouseListener
     	if (key == KeyEvent.VK_S)
     	{
     		// Example of playing a sound as a thread
-    		Sound s = new Sound("sounds/caw.wav");
+    		Sound s = new Sound("sounds/soundtrack/mainmenu.wav");
     		s.start();
     	}
     }
@@ -357,8 +357,8 @@ public class Core extends GameCore implements MouseListener
         Animation proj_anim = new Animation();
         proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
         Projectile proj = new Projectile(proj_anim);
-        proj.setX(player.getX());
-        proj.setY(player.getY());
+        proj.setX(playerEntity.getX());
+        proj.setY(playerEntity.getY());
         double angle = xydiffcalc.getAngle(proj.getX(), proj.getY(), x, y);
         xydiffcalc.setVelocity(0.5f, angle);
         proj.setVelocityX((float)xydiffcalc.getdx());

@@ -1,12 +1,9 @@
 package game.levels;
 
-import game.actors.ConsumableEntity;
+import game.actors.mechanics.Ambulatory;
 import game.actors.enemy.EnemyEntity;
-import game.actors.Player;
 
 import cairns.david.engine.*;
-import game.actors.Projectile;
-import game.core.Core;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -17,17 +14,11 @@ import java.util.LinkedList;
 public class LevelBundle {
 
     private TileMap tilemap;
-    private Player player;
-    private LinkedList<EnemyEntity> enemy_list;
-    private LinkedList<Projectile> projectile_list;
-    private LinkedList<ConsumableEntity> consumable_list;
+    private LinkedList<Sprite> sprites_list;
 
     public LevelBundle() {
         this.tilemap = tilemap;
-        this.player = player;
-        this.enemy_list = new LinkedList<>();
-        this.projectile_list = new LinkedList<>();
-        this.consumable_list = new LinkedList<>();
+        this.sprites_list = new LinkedList<Sprite>();
     }
 
     /***
@@ -38,20 +29,8 @@ public class LevelBundle {
      */
     public boolean addSpriteToLevel(Sprite sprite) {
         if(sprite instanceof EnemyEntity) {
-            synchronized (enemy_list) {
-                enemy_list.add((EnemyEntity)sprite);
-                return true;
-            }
-        }
-        if(sprite instanceof ConsumableEntity) {
-            synchronized (consumable_list) {
-                consumable_list.add((ConsumableEntity)sprite);
-                return true;
-            }
-        }
-        if(sprite instanceof Projectile) {
-            synchronized (projectile_list) {
-                projectile_list.add((Projectile)sprite);
+            synchronized (sprites_list) {
+                sprites_list.add(sprite);
                 return true;
             }
         }
@@ -66,55 +45,49 @@ public class LevelBundle {
      * @return false if any of the sprites are of non-player type and terminates
      */
     public boolean addSpriteToLevel(Sprite[] sprites) {
-        boolean non_player;
         for(Sprite sprite: sprites) {
-            non_player = addSpriteToLevel(sprite);
-            if (!non_player) {
-                return false;
-            }
+            addSpriteToLevel(sprite);
         }
         return true;
     }
 
     /***
      * Self-renders all sprite in scene in order enemies -> consumables -> projectiles -> player
-     * Player ends up on top in this hierarchy. Synchronize-Block-s list containers in order to avoid Concurrent Modification
-     * @param g the graphical context to self-render on
+     * PlayerEntity ends up on top in this hierarchy. Synchronize-Block-s list containers in order to avoid Concurrent Modification
+     * @param g graphics context to draw on
+     * @param x_offset the x-offset of the scene
+     * @param y_offset the y-offset of the scene
      */
     public void spritesRenderSelf(Graphics2D g, int x_offset, int y_offset) {
-        synchronized (enemy_list) {
-            for (Sprite sprite: enemy_list) {
+        synchronized (sprites_list) {
+            for (Sprite sprite: sprites_list) {
                 sprite.setOffsets(x_offset, y_offset);
                 sprite.draw(g);
             }
         }
-
-        synchronized (consumable_list) {
-            for (Sprite sprite: consumable_list) {
-                sprite.setOffsets(x_offset, y_offset);
-                sprite.draw(g);
-            }
-        }
-
-        synchronized (projectile_list) {
-            for (Sprite sprite: projectile_list) {
-                sprite.setOffsets(x_offset, y_offset);
-                sprite.draw(g);
-            }
-        }
-        player.draw(g);
     }
 
+    /***
+     * builds movement of all sprites that are an instance of the Ambulatory interface,
+     * which anything that applies movement changes to self after being added to the sprite_list implements
+     * @param context the tileMap context of the sprite
+     * @param time_elapsed the time elapsed for a frame
+     * @param gravity the gravity value
+     * @param controller_left controller left pressed?
+     * @param controller_right controller right pressed?
+     * @param controller_up controller up pressed?
+     * @param controller_down controller down pressed?
+     */
     public void spritesBuildMovement(TileMap context, Long time_elapsed, float gravity,
                                      boolean controller_left, boolean controller_right,
                                      boolean controller_up, boolean controller_down) {
-        synchronized (enemy_list) {
-            for (EnemyEntity enemy: enemy_list) {
-                enemy.buildMovement(context, time_elapsed, gravity);
+        synchronized (sprites_list) {
+            for (Sprite sprite: sprites_list) {
+                if (sprite instanceof Ambulatory) {
+                    Ambulatory ambulatory = (Ambulatory) sprite;
+                    ambulatory.buildMovement(context, time_elapsed, gravity, controller_left, controller_right, controller_up, controller_down);
+                }
             }
         }
-        player.buildMovement(context, time_elapsed, gravity, controller_left,
-                controller_right, controller_up, controller_down);
     }
-
 }
