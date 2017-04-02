@@ -86,8 +86,8 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
         temp_dy += new_move.getDy();
         last_movement = new_move.getMove();
 
-        movement_velocity.setVelocity(gravity * 1, 90);
-        temp_dy += (float) movement_velocity.getdy();
+        movement_velocity.setVelocity(gravity * time_elapsed, 90);
+        temp_dy += (float) movement_velocity.getdy() + getVelocityY();
 
         int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed);
         // Set sprite movement_velocity according to delta values calculated and collision type
@@ -101,14 +101,13 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
 
             }
             if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
-                super.setVelocityX(temp_dx);
-                super.setVelocityY(0f);
-                // if hitting anything on the y axis set the jumping movement_velocity to 0,
-                // and let gravity do its part
-                jumping_velocity.setVelocity(0, 0);
                 if(temp_dy > 0) {
                     is_jumping = false;
                 }
+                super.setVelocityX(temp_dx);
+                super.setVelocityY(0f);
+
+
             }
             if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
 
@@ -122,17 +121,22 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
 
     private EnemyMove simulateInput(TileMap context, Long time_elapsed) {
         ArrayList<EnemyMove> possibleMoves = establishPossibleMoves(context, time_elapsed);
-        if(last_movement == EnemyMove.ENEMY_NO_MOVEMENT) {
-            Random random = new Random();
-            return possibleMoves.get(random.nextInt(possibleMoves.size()));
-        } else {
-            for (EnemyMove move : possibleMoves) {
-                if(move.getMove() == last_movement) {
-                    return move;
+        if(!possibleMoves.isEmpty()) {
+            if(last_movement == EnemyMove.ENEMY_NO_MOVEMENT) {
+                Random random = new Random();
+                return possibleMoves.get(random.nextInt(possibleMoves.size()));
+            } else {
+                for (EnemyMove move : possibleMoves) {
+                    if(move.getMove() == last_movement) {
+                        return move;
+                    }
                 }
+                Random random = new Random();
+                return possibleMoves.get(random.nextInt(possibleMoves.size()));
             }
-            Random random = new Random();
-            return possibleMoves.get(random.nextInt(possibleMoves.size()));
+        }
+        else {
+            return new EnemyMove(0.0f, 0.0f, EnemyMove.ENEMY_NO_MOVEMENT);
         }
     }
 
@@ -141,7 +145,6 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
         movement_velocity.setVelocity(0.0, 0.0);
         float temp_dx;
         float temp_dy;
-
 
         // check if left movement causes collision
         movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 180);

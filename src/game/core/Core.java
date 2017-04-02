@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,6 +15,7 @@ import cairns.david.engine.*;
 import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
 import game.actors.enemy.EnemyEntity;
+import sun.java2d.loops.FillRect;
 
 import javax.swing.*;
 
@@ -36,8 +39,13 @@ public class Core extends GameCore implements MouseListener
 	static int SCREEN_WIDTH = 512;
     static int SCREEN_HEIGHT = 384;
 
+    static int FRAME_WIDTH = 1920;
+    static int FRAME_HEIGHT = 1080;
+
+    static float scale = 0;
+
     float lift = 0.0f;
-    float gravity = 0.2f;
+    float gravity = 0.001f;
 
     /* Velocity instance, added to calculate delta-x and delta-y,
     according to button presses, instead of hardcoding movement */
@@ -59,7 +67,7 @@ public class Core extends GameCore implements MouseListener
     private EnemyEntity enemy = null;
     private ArrayList<Sprite> clouds = new ArrayList<>();
 
-    private LinkedList<Projectile> projectiles = new LinkedList<>();
+    private final LinkedList<Projectile> projectiles = new LinkedList<>();
 
     private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
     
@@ -77,7 +85,7 @@ public class Core extends GameCore implements MouseListener
         Core gct = new Core();
         gct.init();
         // Start in windowed mode with the given screen height and width
-        gct.run(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+        gct.run(false, FRAME_WIDTH, FRAME_HEIGHT);
     }
 
     /**
@@ -86,6 +94,7 @@ public class Core extends GameCore implements MouseListener
      */
     public void init()
     {
+        scale = FRAME_WIDTH/SCREEN_WIDTH;
         // set cursor to a simple crosshair
         setCursor(Cursor.CROSSHAIR_CURSOR);
         // add itself as a mouse listener
@@ -168,38 +177,48 @@ public class Core extends GameCore implements MouseListener
         // ...?
         //g.drawImage(background, 0, 0, null);
         
-        g.setColor(Color.black);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        //g.setColor(Color.black);
+       // g.fillRect(0, 0, getWidth(), getHeight());
         
         // Apply offsets to sprites then draw them
-        for (Sprite s: clouds)
+        /*for (Sprite s: clouds)
         {
         	s.setOffsets(xo,yo);
         	s.draw(g);
-        }
+        }*/
+
+        BufferedImage bimage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT,
+                BufferedImage.TYPE_BYTE_INDEXED);
+        Graphics2D buffered_graphics = bimage.createGraphics();
+        buffered_graphics.setClip(0, 0, getWidth(), getHeight());
+        buffered_graphics.setColor(Color.black);
+        buffered_graphics.fillRect(0, 0, getWidth(), getHeight());
+
 
 
                 
         // Apply offsets to tile map and draw  it
-        tmap.draw(g,xo,yo);
+        tmap.draw(buffered_graphics,xo,yo);
 
         // Apply offsets to playerEntity and draw
         playerEntity.setOffsets(xo, yo);
-        playerEntity.draw(g);
+        playerEntity.draw(buffered_graphics);
 
         enemy.setOffsets(xo, yo);
-        enemy.draw(g);
+        enemy.draw(buffered_graphics);
 
         Iterator<Projectile> iter = projectiles.iterator();
         synchronized (projectiles) {
             while (iter.hasNext()) {
                 Projectile temp = iter.next();
                 temp.setOffsets(xo, yo);
-                temp.draw(g);
+                temp.draw(buffered_graphics);
             }
         }
+        AffineTransform at = new AffineTransform();
+        at.scale(scale, scale);
+        g.drawImage(bimage, at, null);
 
-        
         // Show score and status information
         /*String msg = String.format("Score: %d", total/100);
         g.setColor(Color.darkGray);
@@ -351,8 +370,8 @@ public class Core extends GameCore implements MouseListener
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = e.getX();
-        int y = e.getY();
+        int x = (int) (e.getX()/scale);
+        int y = (int) (e.getY()/scale);
         System.out.println("Cursor pos: " + x + y);
         Animation proj_anim = new Animation();
         proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
@@ -365,9 +384,8 @@ public class Core extends GameCore implements MouseListener
         proj.setVelocityY((float)xydiffcalc.getdy());
         proj.show();
 
-        ListIterator<Projectile> iter = projectiles.listIterator();
         synchronized (projectiles) {
-            iter.add(proj);
+            projectiles.add(proj);
         }
     }
 

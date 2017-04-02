@@ -119,46 +119,46 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
         if (up) {
             if(!is_jumping) {
                 is_jumping = true;
-                jumping_velocity.setVelocity(getBase_movement_speed() * 7, -90);
+                movement_velocity.setVelocity(0.2 * getSpeed_multiplier(), 270);
+                temp_dy += (float) movement_velocity.getdy();
             }
         }
 
-        if (is_jumping) {
+        /*if (is_jumping) {
             temp_dy += jumping_velocity.getdy();
             jumping_velocity.setVelocity(jumping_velocity.getSpeed() /1.04, -90);
-        }
+        }*/
 
-            movement_velocity.setVelocity(gravity * 1, 90);
+            movement_velocity.setVelocity(gravity * time_elapsed, 90);
             temp_dy += (float) movement_velocity.getdy();
 
 
 
 
-        int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed);
+        int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, super.getVelocityY() + temp_dy, time_elapsed);
         // Set sprite movement_velocity according to delta values calculated and collision type
         if (collision_type == CollisionEngine.COLLISION_NONE) {
-            super.setVelocityX(temp_dx);
-            super.setVelocityY(temp_dy);
+            super.setVelocityX(temp_dx); // we want linear change in x
+            super.setVelocityY(super.getVelocityY() + temp_dy); // we want forces adding up in y
         } else {
             if(collision_type == CollisionEngine.COLLISION_X_AXIS) {
-                super.setVelocityY(temp_dy);
+                super.setVelocityY(super.getVelocityY() + temp_dy); // we want forces adding up in y
                 super.setVelocityX(0f);
 
             }
             if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
+                if(temp_dy + getVelocityY()  > 0) {
+                    is_jumping = false;
+                }
                 super.setVelocityX(temp_dx);
                 super.setVelocityY(0f);
-                // if hitting anything on the y axis set the jumping movement_velocity to 0,
                 // and let gravity do its part
-                jumping_velocity.setVelocity(0, 0);
-                    if(temp_dy > 0) {
-                        is_jumping = false;
-                    }
+
             }
             if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
 
                 super.stop();
-                if(temp_dy > 0) {
+                if(temp_dy + getVelocityY() > 0) {
                     is_jumping = false;
                 }
             }
@@ -183,7 +183,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
      */
     @Override
     public Rectangle.Float getCollisionBounds() {
-        Rectangle.Float collision_bounds = new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
+        Rectangle.Float collision_bounds = new Rectangle.Float(getX() + 10, getY() + 5, getWidth() - 20, getHeight() - 7);
         return collision_bounds;
     }
 
