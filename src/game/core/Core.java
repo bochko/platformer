@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -15,6 +16,7 @@ import cairns.david.engine.*;
 import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
 import game.actors.enemy.EnemyEntity;
+import game.subsidiaries.visuals.DecorativeTileMap;
 import sun.java2d.loops.FillRect;
 
 import javax.swing.*;
@@ -39,8 +41,8 @@ public class Core extends GameCore implements MouseListener
 	static int SCREEN_WIDTH = 512;
     static int SCREEN_HEIGHT = 384;
 
-    static int FRAME_WIDTH = 1920;
-    static int FRAME_HEIGHT = 1080;
+    static int FRAME_WIDTH = 1024;
+    static int FRAME_HEIGHT = 768;
 
     static float scale = 0;
 
@@ -70,6 +72,8 @@ public class Core extends GameCore implements MouseListener
     private final LinkedList<Projectile> projectiles = new LinkedList<>();
 
     private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
+    private DecorativeTileMap backdrop_tmap = new DecorativeTileMap();
+    private DecorativeTileMap foredrop_tmap = new DecorativeTileMap();
     
     private long total;         			// The score will be the total time elapsed since a crash
 
@@ -103,7 +107,10 @@ public class Core extends GameCore implements MouseListener
         Sprite s;	// Temporary reference to a sprite
 
         // Load the tile map and print it out so we can check it is valid
+        foredrop_tmap.loadMap("maps", "foredrop1_map.txt");
+        backdrop_tmap.loadMap("maps", "backdrop1_map.txt");
         tmap.loadMap("maps", "map.txt");
+
 
         // Create a set of background sprites that we can 
         // rearrange to give the illusion of motion
@@ -122,7 +129,7 @@ public class Core extends GameCore implements MouseListener
 
         
         // Initialise the playerEntity with an animation
-        playerEntity = new PlayerEntity(robot_idle_anim, 100, 0.08f);
+        playerEntity = new PlayerEntity(robot_idle_anim, 100, 0.06f);
 
         enemy = new EnemyEntity(enemy_green_anim, 100, 0.04f);
         
@@ -161,7 +168,7 @@ public class Core extends GameCore implements MouseListener
     @Override
     public void draw(Graphics2D g)
     {
-        Image background = new ImageIcon("images/galaxy.png").getImage();
+        Image background = new ImageIcon("images/backgrounds/background.png").getImage();
 
         // Be careful about the order in which you draw objects - you
     	// should draw the background first, then work your way 'forward'
@@ -175,7 +182,7 @@ public class Core extends GameCore implements MouseListener
         // it is relative to the playerEntity
 
         // ...?
-        //g.drawImage(background, 0, 0, null);
+
         
         //g.setColor(Color.black);
        // g.fillRect(0, 0, getWidth(), getHeight());
@@ -187,8 +194,9 @@ public class Core extends GameCore implements MouseListener
         	s.draw(g);
         }*/
 
+        /////////LOOK UP VOLATILE IMAGE FOR GRAPHICS ACCELLERATION\\\\\\\\\\\
         BufferedImage bimage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT,
-                BufferedImage.TYPE_BYTE_INDEXED);
+                BufferedImage.TYPE_INT_RGB);
         Graphics2D buffered_graphics = bimage.createGraphics();
         buffered_graphics.setClip(0, 0, getWidth(), getHeight());
         buffered_graphics.setColor(Color.black);
@@ -196,6 +204,10 @@ public class Core extends GameCore implements MouseListener
 
 
 
+        buffered_graphics.drawImage(background, 0, 0, null);
+
+        // draw backdrop animations
+        backdrop_tmap.draw(buffered_graphics, xo, yo);
                 
         // Apply offsets to tile map and draw  it
         tmap.draw(buffered_graphics,xo,yo);
@@ -215,9 +227,14 @@ public class Core extends GameCore implements MouseListener
                 temp.draw(buffered_graphics);
             }
         }
+
+        foredrop_tmap.draw(buffered_graphics, xo, yo);
         AffineTransform at = new AffineTransform();
         at.scale(scale, scale);
         g.drawImage(bimage, at, null);
+        buffered_graphics.dispose();
+
+
 
         // Show score and status information
         /*String msg = String.format("Score: %d", total/100);
@@ -237,6 +254,9 @@ public class Core extends GameCore implements MouseListener
         /*
         playerEntity.setVelocityY(playerEntity.getVelocityY()+(gravity*elapsed));
     	 */
+
+        backdrop_tmap.updateDecorativeSprites(elapsed);
+        foredrop_tmap.updateDecorativeSprites(elapsed);
 
        	playerEntity.setAnimationSpeed(1.0f);
        	playerEntity.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
