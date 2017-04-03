@@ -4,9 +4,7 @@ import cairns.david.engine.Animation;
 import cairns.david.engine.Sprite;
 import cairns.david.engine.Tile;
 
-import javax.swing.ImageIcon;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,8 +41,8 @@ import java.io.*;
 public class DecorativeTileMap
 {
 
-    public static final int DECORATIVE_MAP_ANIM_ROWS = 1;
-    public static final int DECORATIVE_MAP_ANIM_COLS = 10;
+    public static final int DECORATIVE_MAP_DEFAULT_ANIM_ROWS = 1;
+    public static final int DECORATIVE_MAP_DEFAULT_ANIM_COLS = 1;
 
     private Tile[][] tmap;		// The tile map grid, initially null
     private int mapWidth=0;		// The maps width in tiles
@@ -151,20 +149,42 @@ public class DecorativeTileMap
 
                 if (trimmed.charAt(0) == '#') // Look for a character to image map
                 {
-                    // Extract the character
-                    String ch = "" + trimmed.charAt(1);
-                    // and it's file name
-                    String fileName = trimmed.substring(3,trimmed.length());
-                    Animation sprite_animation = new Animation();
-                    sprite_animation.loadAnimationFromSheet(folder + "/" + fileName, DECORATIVE_MAP_ANIM_COLS, DECORATIVE_MAP_ANIM_ROWS, 100);
 
-                    Sprite sprite  = new Sprite(sprite_animation);
-                    sprite.show();
-                    // Now add this character->image mapping to the map
-                    if (sprite != null)
-                        spritemap.put(ch,sprite);
-                    else
-                        System.err.println("Failed to load animation into new sprite '" + folder + "/" + fileName + "'");
+                    if(trimmed.contains("?rows") && trimmed.contains("?cols") && trimmed.contains("?length")) {
+                        // Extract the character
+                        String ch = "" + trimmed.charAt(1);
+                        // and it's file name
+                        String fileName = trimmed.substring(3,trimmed.indexOf("?cols"));
+                        // number of cols
+                        String anim_cols = trimmed.substring(trimmed.indexOf("?cols"),trimmed.indexOf("?rows")).substring(6);
+                        // number of rows
+                        String anim_rows = trimmed.substring(trimmed.indexOf("?rows"),trimmed.indexOf("?length")).substring(6);
+                        // frame length
+                        String anim_frame_length = trimmed.substring(trimmed.indexOf("?length"),trimmed.length()).substring(8);
+
+                        try {
+                            int parsed_anim_cols = Integer.parseInt(anim_cols);
+                            int parsed_anim_rows = Integer.parseInt(anim_rows);
+                            int parsed_anim_frame_length = Integer.parseInt(anim_frame_length);
+
+                            Animation sprite_animation = new Animation();
+                            sprite_animation.loadAnimationFromSheet(folder + "/" + fileName, parsed_anim_cols, parsed_anim_rows, parsed_anim_frame_length);
+
+                            Sprite sprite  = new Sprite(sprite_animation);
+                            sprite.show();
+                            // Now add this character->image mapping to the map
+                            if (sprite != null)
+                                spritemap.put(ch,sprite);
+                            else
+                                System.err.println("Failed to load animation into new sprite '" + folder + "/" + fileName + "'");
+
+                        } catch (NumberFormatException ex) {
+                            ex.printStackTrace();
+                            System.out.println("Illegal arguments in mapfile");
+                        }
+                    } else {
+                        System.out.println("\nPARSE ERROR: !!Tile declarations in mapfile lack arguments at: " + trimmed + "\n");
+                    }
                 }
             }
 

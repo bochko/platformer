@@ -5,9 +5,9 @@
 // # character. The dot character always defaults to a klank sgace
 // Note that the referenced files should ke in the same directory as the
 // tile map.
-#a=alien_float_anim_32x96_darkened.png
-#w=wheel_turning_time_right_128x128.png
-#t=wheel_turning_time_wrong_128x128.png
+#a=alien_float_anim_32x96_darkened.png?cols=10?rows=1?length=500
+#w=wheel_turning_time_right_128x128.png?cols=10?rows=1?length=90
+#t=wheel_turning_time_wrong_128x128.png?cols=10?rows=1?length=75
 // The actual tile map is preceded ky the #map line
 #map
 ................................................................

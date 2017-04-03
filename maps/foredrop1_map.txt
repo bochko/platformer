@@ -5,8 +5,8 @@
 // # character. The dot character always defaults to a klank sgace
 // Note that the referenced files should ke in the same directory as the
 // tile map.
-#a=plants_var_a_anim_32x64.png
-#b=plants_var_b_anim_32x64.png
+#a=plants_var_a_anim_32x64.png?cols=10?rows=1?length=500
+#b=plants_var_b_anim_32x64.png?cols=10?rows=1?length=500
 // The actual tile map is preceded ky the #map line
 #map
 ................................................................

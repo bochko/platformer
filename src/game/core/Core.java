@@ -168,6 +168,7 @@ public class Core extends GameCore implements MouseListener
     @Override
     public void draw(Graphics2D g)
     {
+        super.paint(g); // calling super.paint NEEDS TO BE CALLED IN ORDER TO utilize the default rendering settings of JFrame, which include double buffering
         Image background = new ImageIcon("images/backgrounds/background.png").getImage();
 
         // Be careful about the order in which you draw objects - you
@@ -195,44 +196,42 @@ public class Core extends GameCore implements MouseListener
         }*/
 
         /////////LOOK UP VOLATILE IMAGE FOR GRAPHICS ACCELLERATION\\\\\\\\\\\
-        BufferedImage bimage = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT,
-                BufferedImage.TYPE_INT_RGB);
-        Graphics2D buffered_graphics = bimage.createGraphics();
-        buffered_graphics.setClip(0, 0, getWidth(), getHeight());
-        buffered_graphics.setColor(Color.black);
-        buffered_graphics.fillRect(0, 0, getWidth(), getHeight());
 
+        VolatileImage accelerated_buffer = createVolatileImage(SCREEN_WIDTH, SCREEN_HEIGHT);
+        Graphics2D accelerated_graphics = accelerated_buffer.createGraphics();
+        accelerated_graphics.setClip(0, 0, getWidth(), getHeight());
+        accelerated_graphics.setColor(Color.black);
+        accelerated_graphics.fillRect(0, 0, getWidth(), getHeight());
 
-
-        buffered_graphics.drawImage(background, 0, 0, null);
+        accelerated_graphics.drawImage(background, 0, 0, null);
 
         // draw backdrop animations
-        backdrop_tmap.draw(buffered_graphics, xo, yo);
+        backdrop_tmap.draw(accelerated_graphics, xo, yo);
                 
         // Apply offsets to tile map and draw  it
-        tmap.draw(buffered_graphics,xo,yo);
+        tmap.draw(accelerated_graphics,xo,yo);
 
         // Apply offsets to playerEntity and draw
         playerEntity.setOffsets(xo, yo);
-        playerEntity.draw(buffered_graphics);
+        playerEntity.draw(accelerated_graphics);
 
         enemy.setOffsets(xo, yo);
-        enemy.draw(buffered_graphics);
+        enemy.draw(accelerated_graphics);
 
         Iterator<Projectile> iter = projectiles.iterator();
         synchronized (projectiles) {
             while (iter.hasNext()) {
                 Projectile temp = iter.next();
                 temp.setOffsets(xo, yo);
-                temp.draw(buffered_graphics);
+                temp.draw(accelerated_graphics);
             }
         }
 
-        foredrop_tmap.draw(buffered_graphics, xo, yo);
+        foredrop_tmap.draw(accelerated_graphics, xo, yo);
         AffineTransform at = new AffineTransform();
         at.scale(scale, scale);
-        g.drawImage(bimage, at, null);
-        buffered_graphics.dispose();
+        g.drawImage(accelerated_buffer, at, null);
+        accelerated_graphics.dispose();
 
 
 
