@@ -27,7 +27,11 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     public static final int DEFAULT_JUMP_HEIGHT_PX = 32;
     public static final int DEFAULT_JUMP_DURATION_MS = 500;
 
-    private float health_points;
+    public static final int PLAYER_MAX_HEALTH = 100;
+
+
+
+    private int health_points;
 
     private float base_movement_speed;
 
@@ -47,14 +51,13 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
      * health points, and base movement speed.
      *
      * @param anim The animation to use for the sprite.
-     * @param health_points The initial and max health points of the player
      * @param base_movement_speed PlayerEntity's base movement speed
      */
-    public PlayerEntity(Animation anim, int health_points, float base_movement_speed) {
+    public PlayerEntity(Animation anim, float base_movement_speed) {
         // call the super constructor
         super(anim);
         // initialize all properties
-        this.health_points = health_points;
+        this.health_points = 50;
         this.base_movement_speed = base_movement_speed;
         this.speed_multiplier = PlayerEntity.DEFAULT_SPEED_MULTIPLIER;
         this.base_damage = PlayerEntity.DEFAULT_BASE_DAMAGE;
@@ -188,14 +191,17 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     }
 
     public int getJumpHeight() {
+
         return DEFAULT_JUMP_HEIGHT_PX;
     }
 
     public int getJumpTime() {
+
         return DEFAULT_JUMP_DURATION_MS;
     }
 
     public float getSpeed_multiplier() {
+
         return speed_multiplier;
     }
 
@@ -205,6 +211,14 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
     public float getBase_movement_speed() {
         return base_movement_speed;
+    }
+
+    public int getHealth_points() {
+        return health_points;
+    }
+
+    public void setHealth_points(int health_points) {
+        this.health_points = health_points;
     }
 
 

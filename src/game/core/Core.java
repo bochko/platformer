@@ -17,6 +17,7 @@ import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
 import game.actors.enemy.EnemyEntity;
 import game.subsidiaries.visuals.DecorativeTileMap;
+import game.subsidiaries.visuals.HeadsUpDisplay;
 import sun.java2d.loops.FillRect;
 
 import javax.swing.*;
@@ -64,7 +65,9 @@ public class Core extends GameCore implements MouseListener
     private Animation robot_right_anim;
     private Animation robot_left_anim;
     private Animation enemy_green_anim;
-    
+
+    private HeadsUpDisplay hud;
+
     private PlayerEntity playerEntity = null;
     private EnemyEntity enemy = null;
     private ArrayList<Sprite> clouds = new ArrayList<>();
@@ -112,6 +115,8 @@ public class Core extends GameCore implements MouseListener
         tmap.loadMap("maps", "map.txt");
 
 
+
+
         // Create a set of background sprites that we can 
         // rearrange to give the illusion of motion
         
@@ -129,13 +134,11 @@ public class Core extends GameCore implements MouseListener
 
         
         // Initialise the playerEntity with an animation
-        playerEntity = new PlayerEntity(robot_idle_anim, 100, 0.06f);
+        playerEntity = new PlayerEntity(robot_idle_anim, 0.06f);
 
         enemy = new EnemyEntity(enemy_green_anim, 100, 0.04f);
-        
-        // Load a single cloud animation
-        Animation ca = new Animation();
-        ca.addFrame(loadImage("images/cloud.png"), 1000);
+
+        hud = new HeadsUpDisplay(SCREEN_WIDTH, SCREEN_HEIGHT, "images/hud/health_bar.png", "images/hud/score_pane.png", playerEntity);
 
         initialiseGame();
       		
@@ -228,6 +231,9 @@ public class Core extends GameCore implements MouseListener
         }
 
         foredrop_tmap.draw(accelerated_graphics, xo, yo);
+
+        hud.draw(accelerated_graphics);
+
         AffineTransform at = new AffineTransform();
         at.scale(scale, scale);
         g.drawImage(accelerated_buffer, at, null);
@@ -306,6 +312,8 @@ public class Core extends GameCore implements MouseListener
        
         // Then check for any collisions that may have occurred
         handleTileMapCollisions(playerEntity,elapsed);
+
+        hud.update(playerEntity);
          	
     }
 
