@@ -46,6 +46,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     private Velocity movement_velocity;
     private Velocity jumping_velocity;
 
+
     /***
      * Creates a new Sprite object with the specified Animation,
      * health points, and base movement speed.

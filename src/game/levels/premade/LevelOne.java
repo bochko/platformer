@@ -11,6 +11,7 @@ import game.levels.mechanics.LevelPuppeteer;
 import game.subsidiaries.visuals.HeadsUpDisplay;
 import game.subsidiaries.visuals.SpriteMap;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -19,6 +20,9 @@ import java.util.LinkedList;
  * Created by lazarus on 03/04/17.
  */
 public class LevelOne implements Level {
+
+    private final float GRAVITY = 0.001f;
+
     private Animation robot_idle_anim;
     private Animation robot_right_anim;
     private Animation robot_left_anim;
@@ -32,6 +36,7 @@ public class LevelOne implements Level {
 
     private final LinkedList<Projectile> projectiles = new LinkedList<>();
 
+    private Image background;
     private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
     private SpriteMap backdrop_tmap = new SpriteMap();
     private SpriteMap foredrop_tmap = new SpriteMap();
@@ -39,6 +44,8 @@ public class LevelOne implements Level {
     LevelPuppeteer levelPuppeteer;
 
     public LevelOne(int context_width, int context_height) {
+        // load background image
+        background = new ImageIcon("images/backgrounds/background.png").getImage();
         // Load the tile map and print it out so we can check it is valid
         foredrop_tmap.loadMap("maps", "foredrop1_map.txt");
         backdrop_tmap.loadMap("maps", "backdrop1_map.txt");
@@ -77,23 +84,25 @@ public class LevelOne implements Level {
         hud = new HeadsUpDisplay(context_width, context_height, "images/hud/health_bar.png", "images/hud/score_pane.png", playerEntity);
 
         // initialize puppeteer and surrender sprites to it
+        levelPuppeteer = new LevelPuppeteer(tmap, foredrop_tmap, backdrop_tmap, background, playerEntity, hud);
         initializePuppeteer();
     }
 
     private void initializePuppeteer() {
-        levelPuppeteer = new LevelPuppeteer();
-        levelPuppeteer.surrenderSpriteToJurisdiction(playerEntity);
         levelPuppeteer.surrenderSpriteToJurisdiction(enemy);
     }
 
-    public void update(Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
-        levelPuppeteer.updateEntities(time_elapsed);
-        levelPuppeteer.purgeDeadMortals();
-        levelPuppeteer.enforceMovement(time_elapsed, gravity, left, right, up, down);
+    public void update(Long time_elapsed, boolean left, boolean right, boolean up, boolean down) {
+        levelPuppeteer.enforceMovement(time_elapsed, GRAVITY, left, right, up, down);
+        levelPuppeteer.updateAll(time_elapsed);
     }
 
     public void draw(Graphics2D g, int x_offset, int y_offset) {
-        levelPuppeteer.enforceRender(g, x_offset, y_offset);
+        levelPuppeteer.enforceBackdropRender(g, x_offset, y_offset);
+        levelPuppeteer.enforceTileMapRender(g, x_offset, y_offset);
+        levelPuppeteer.enforcePlayerRender(g, x_offset, y_offset);
+        levelPuppeteer.enforceSpriteRender(g, x_offset, y_offset);
+        levelPuppeteer.enforceForedropRender(g, x_offset, y_offset);
     }
 
 

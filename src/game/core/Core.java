@@ -11,6 +11,7 @@ import java.util.ListIterator;
 
 import cairns.david.engine.*;
 import game.actors.projectiles.Projectile;
+import game.levels.premade.LevelOne;
 
 import javax.swing.*;
 
@@ -38,25 +39,18 @@ public class Core extends GameCore implements MouseListener
     static int FRAME_HEIGHT = 768;
 
     static float scale = 0;
-
-    float lift = 0.0f;
-    float gravity = 0.001f;
-
-    /* Velocity instance, added to calculate delta-x and delta-y,
-    according to button presses, instead of hardcoding movement */
-    private Velocity xydiffcalc = new Velocity();
     
-    // Game state flags
+    // Game controller flags
     private boolean player_up = false;
     private boolean player_down = false;
     private boolean player_left = false;
     private boolean player_right = false;
 
-    // Game resources
+    // PID Controller
+    PIDController PID;
 
-    
-    private long total;         			// The score will be the total time elapsed since a crash
-
+    // Level
+    private LevelOne level;
 
     /**
 	 * The obligatory main method that creates
@@ -83,7 +77,6 @@ public class Core extends GameCore implements MouseListener
         setCursor(Cursor.CROSSHAIR_CURSOR);
         // add itself as a mouse listener
         this.addMouseListener(this);
-
         initializeLevel();
     }
 
@@ -92,9 +85,8 @@ public class Core extends GameCore implements MouseListener
      * a separate method so that you can call it to restart
      * the game.
      */
-    public void initializeLevel()
-    {
-
+    public void initializeLevel() {
+        level = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT);
     }
     
     /**
@@ -104,35 +96,17 @@ public class Core extends GameCore implements MouseListener
     public void draw(Graphics2D g)
     {
         super.paint(g); // calling super.paint NEEDS TO BE CALLED IN ORDER TO utilize the default rendering settings of JFrame, which include double buffering
-        Image background = new ImageIcon("images/backgrounds/background.png").getImage();
-
-        // Be careful about the order in which you draw objects - you
-    	// should draw the background first, then work your way 'forward'
 
     	// First work out how much we need to shift the view 
     	// in order to see where the playerEntity is.
         int xo = 0;
         int yo = 0;
 
-        // If relative, adjust the offset so that
-        // it is relative to the playerEntity
-
-        // ...?
-        
-        // Apply offsets to sprites then draw them
-        /*for (Sprite s: clouds)
-        {
-        	s.setOffsets(xo,yo);
-        	s.draw(g);
-        }*/
-
-        /////////LOOK UP VOLATILE IMAGE FOR GRAPHICS ACCELLERATION\\\\\\\\\\\
-
         VolatileImage accelerated_buffer = createVolatileImage(SCREEN_WIDTH, SCREEN_HEIGHT);
         Graphics2D accelerated_graphics = accelerated_buffer.createGraphics();
         accelerated_graphics.setClip(0, 0, getWidth(), getHeight());
 
-        // LEVEL + PUPPETEER WORK HERE
+        level.draw(accelerated_graphics, xo, yo);
 
         AffineTransform at = new AffineTransform();
         at.scale(scale, scale);
@@ -147,42 +121,8 @@ public class Core extends GameCore implements MouseListener
      */    
     public void update(long elapsed)
     {
-
-
-        backdrop_tmap.updateDecorativeSprites(elapsed);
-        foredrop_tmap.updateDecorativeSprites(elapsed);
-
-
-       	playerEntity.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
-
-       	enemy.setAnimationSpeed(1.0f);
-       	enemy.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
-
-
-
-       	for (Sprite s: clouds)
-       		s.update(elapsed);
-
-        // Now update the sprites animation and position
-        playerEntity.update(elapsed);
-        enemy.update(elapsed);
-
-        ListIterator<Projectile> iter = projectiles.listIterator();
-        synchronized (projectiles) {
-            while (iter.hasNext()){
-                Projectile temp = iter.next();
-                temp.update(elapsed);
-            }
-        }
-       
-        // Then check for any collisions that may have occurred
-        handleTileMapCollisions(playerEntity,elapsed);
-
-        hud.update(playerEntity);
-         	
+        level.update(elapsed, player_left, player_right, player_up, player_down);
     }
-
-
 
     /**
      * Checks and handles collisions with the tile map for the
@@ -191,7 +131,7 @@ public class Core extends GameCore implements MouseListener
      * @param s			The Sprite to check collisions for
      * @param elapsed	How time has gone by
      */
-    public void handleTileMapCollisions(Sprite s, long elapsed)
+    /*public void handleTileMapCollisions(Sprite s, long elapsed)
     {
     	// This method should check actual tile map collisions. For
     	// now it just checks if the playerEntity has gone off the bottom
@@ -205,7 +145,7 @@ public class Core extends GameCore implements MouseListener
         	// and make them bounce
         	playerEntity.setVelocityY(-playerEntity.getVelocityY() * (0.03f * elapsed));
         }
-    }
+    }*/
     
     
      
@@ -237,12 +177,6 @@ public class Core extends GameCore implements MouseListener
     	}
     }
 
-    public boolean boundingBoxCollision(Sprite s1, Sprite s2)
-    {
-    	return false;   	
-    }
-
-
 	public void keyReleased(KeyEvent e) { 
 
 		int key = e.getKeyCode();
@@ -262,7 +196,7 @@ public class Core extends GameCore implements MouseListener
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        int x = (int) (e.getX()/scale);
+        /*int x = (int) (e.getX()/scale);
         int y = (int) (e.getY()/scale);
         System.out.println("Cursor pos: " + x + y);
         Animation proj_anim = new Animation();
@@ -278,7 +212,7 @@ public class Core extends GameCore implements MouseListener
 
         synchronized (projectiles) {
             projectiles.add(proj);
-        }
+        }*/
     }
 
     @Override
