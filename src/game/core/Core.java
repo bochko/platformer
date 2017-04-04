@@ -6,17 +6,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.VolatileImage;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.ListIterator;
 
 import cairns.david.engine.*;
-import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
-import game.actors.enemy.EnemyEntity;
-import game.subsidiaries.visuals.SpriteMap;
-import game.subsidiaries.visuals.HeadsUpDisplay;
 
 import javax.swing.*;
 
@@ -59,22 +53,7 @@ public class Core extends GameCore implements MouseListener
     private boolean player_right = false;
 
     // Game resources
-    private Animation robot_idle_anim;
-    private Animation robot_right_anim;
-    private Animation robot_left_anim;
-    private Animation enemy_green_anim;
 
-    private HeadsUpDisplay hud;
-
-    private PlayerEntity playerEntity = null;
-    private EnemyEntity enemy = null;
-    private ArrayList<Sprite> clouds = new ArrayList<>();
-
-    private final LinkedList<Projectile> projectiles = new LinkedList<>();
-
-    private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
-    private SpriteMap backdrop_tmap = new SpriteMap();
-    private SpriteMap foredrop_tmap = new SpriteMap();
     
     private long total;         			// The score will be the total time elapsed since a crash
 
@@ -105,42 +84,7 @@ public class Core extends GameCore implements MouseListener
         // add itself as a mouse listener
         this.addMouseListener(this);
 
-        Sprite s;	// Temporary reference to a sprite
-
-        // Load the tile map and print it out so we can check it is valid
-        foredrop_tmap.loadMap("maps", "foredrop1_map.txt");
-        backdrop_tmap.loadMap("maps", "backdrop1_map.txt");
-        tmap.loadMap("maps", "map.txt");
-
-
-
-
-        // Create a set of background sprites that we can 
-        // rearrange to give the illusion of motion
-        
-        robot_idle_anim = new Animation();
-        robot_idle_anim.loadAnimationFromSheet("images/robot_idle_anim.PNG", 11, 1, 60);
-
-        robot_left_anim = new Animation();
-        robot_left_anim.loadAnimationFromSheet("images/robot_left_anim.PNG", 6, 1, 60);
-
-        robot_right_anim = new Animation();
-        robot_right_anim.loadAnimationFromSheet("images/robot_right_anim.PNG", 6, 1, 60);
-
-        enemy_green_anim = new Animation();
-        enemy_green_anim.loadAnimationFromSheet("images/green_alien_enemy.png", 1, 1, 60);
-
-        
-        // Initialise the playerEntity with an animation
-        playerEntity = new PlayerEntity(robot_idle_anim, 0.06f);
-
-        enemy = new EnemyEntity(enemy_green_anim, 100, 0.04f);
-
-        hud = new HeadsUpDisplay(SCREEN_WIDTH, SCREEN_HEIGHT, "images/hud/health_bar.png", "images/hud/score_pane.png", playerEntity);
-
-        initialiseGame();
-      		
-        System.out.println(tmap);
+        initializeLevel();
     }
 
     /**
@@ -148,18 +92,8 @@ public class Core extends GameCore implements MouseListener
      * a separate method so that you can call it to restart
      * the game.
      */
-    public void initialiseGame()
+    public void initializeLevel()
     {
-        playerEntity.setX(64);
-        playerEntity.setY(132);
-        playerEntity.setVelocityX(0.0f);
-        playerEntity.setVelocityY(0.0f);
-        playerEntity.show();
-        enemy.setX(64);
-        enemy.setY(132);
-        enemy.setVelocityX(0.0f);
-        enemy.setVelocityY(0.0f);
-        enemy.show();
 
     }
     
@@ -184,10 +118,6 @@ public class Core extends GameCore implements MouseListener
         // it is relative to the playerEntity
 
         // ...?
-
-        
-        //g.setColor(Color.black);
-       // g.fillRect(0, 0, getWidth(), getHeight());
         
         // Apply offsets to sprites then draw them
         /*for (Sprite s: clouds)
@@ -201,48 +131,13 @@ public class Core extends GameCore implements MouseListener
         VolatileImage accelerated_buffer = createVolatileImage(SCREEN_WIDTH, SCREEN_HEIGHT);
         Graphics2D accelerated_graphics = accelerated_buffer.createGraphics();
         accelerated_graphics.setClip(0, 0, getWidth(), getHeight());
-        accelerated_graphics.setColor(Color.black);
-        accelerated_graphics.fillRect(0, 0, getWidth(), getHeight());
 
-        accelerated_graphics.drawImage(background, 0, 0, null);
-
-        // draw backdrop animations
-        backdrop_tmap.draw(accelerated_graphics, xo, yo);
-                
-        // Apply offsets to tile map and draw  it
-        tmap.draw(accelerated_graphics,xo,yo);
-
-        // Apply offsets to playerEntity and draw
-        playerEntity.setOffsets(xo, yo);
-        playerEntity.draw(accelerated_graphics);
-
-        enemy.setOffsets(xo, yo);
-        enemy.draw(accelerated_graphics);
-
-        Iterator<Projectile> iter = projectiles.iterator();
-        synchronized (projectiles) {
-            while (iter.hasNext()) {
-                Projectile temp = iter.next();
-                temp.setOffsets(xo, yo);
-                temp.draw(accelerated_graphics);
-            }
-        }
-
-        foredrop_tmap.draw(accelerated_graphics, xo, yo);
-
-        hud.draw(accelerated_graphics);
+        // LEVEL + PUPPETEER WORK HERE
 
         AffineTransform at = new AffineTransform();
         at.scale(scale, scale);
         g.drawImage(accelerated_buffer, at, null);
         accelerated_graphics.dispose();
-
-
-
-        // Show score and status information
-        /*String msg = String.format("Score: %d", total/100);
-        g.setColor(Color.darkGray);
-        g.drawString(msg, getWidth() - 80, 50);*/
     }
 
     /**
@@ -252,50 +147,22 @@ public class Core extends GameCore implements MouseListener
      */    
     public void update(long elapsed)
     {
-    	
-        // Make adjustments to the speed of the sprite due to gravity
-        /*
-        playerEntity.setVelocityY(playerEntity.getVelocityY()+(gravity*elapsed));
-    	 */
+
 
         backdrop_tmap.updateDecorativeSprites(elapsed);
         foredrop_tmap.updateDecorativeSprites(elapsed);
 
-       	playerEntity.setAnimationSpeed(1.0f);
+
        	playerEntity.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
 
        	enemy.setAnimationSpeed(1.0f);
        	enemy.buildMovement(tmap, elapsed, gravity, player_left, player_right, player_up, player_down);
 
-       	// Log angle of movement
-        // float angle_deg = xydiffcalc.getAngleFromDxDy(temp_dx, temp_dy);
-        // System.out.println("angle(deg): " + angle_deg + " dx: " + temp_dx + " dy: " + temp_dy);
 
-        // CHANGE SPRITE ANIMATIONS
 
-        /* If control-right or control-left true, but not control-right and left simultaneously,
-        as that should result in no movement on the x axis -> */
-        if ((player_right || player_left) && !(player_right && player_left)) {
-            // if control-right is pressed
-            if(player_right) {
-                playerEntity.setAnimation(robot_right_anim);
-            }
-            // else if control-left is presssed
-            else if(player_left) {
-                playerEntity.setAnimation(robot_left_anim);
-            }
-
-        }
-        /* if neither control-right or control-left are pressed, then no movement on the
-        x axis should occur. -> change the robot's animation to the bobbing one. */
-        else {
-            playerEntity.setAnimation(robot_idle_anim);
-        }
-
-                
        	for (Sprite s: clouds)
        		s.update(elapsed);
-       	
+
         // Now update the sprites animation and position
         playerEntity.update(elapsed);
         enemy.update(elapsed);

@@ -16,6 +16,8 @@ public class LevelPuppeteer {
 
     private TileMap tilemap;
     private LinkedList<Sprite> sprites_list;
+    Image levelbackground;
+
 
     public LevelPuppeteer() {
         this.tilemap = tilemap;
@@ -71,7 +73,6 @@ public class LevelPuppeteer {
     /***
      * builds movement of all sprites that are an instance of the Ambulatory interface,
      * which anything that applies movement changes to self after being added to the sprite_list implements
-     * @param context the tileMap context of the sprite
      * @param time_elapsed the time elapsed for a frame
      * @param gravity the gravity value
      * @param controller_left controller left pressed?
@@ -79,15 +80,22 @@ public class LevelPuppeteer {
      * @param controller_up controller up pressed?
      * @param controller_down controller down pressed?
      */
-    public void enforceMovement(TileMap context, Long time_elapsed, float gravity,
+    public void enforceMovement(Long time_elapsed, float gravity,
                                 boolean controller_left, boolean controller_right,
                                 boolean controller_up, boolean controller_down) {
         synchronized (sprites_list) {
-            for (Sprite sprite: sprites_list) {
-                if (sprite instanceof Ambulatory) {
-                    Ambulatory ambulatory = (Ambulatory) sprite;
-                    ambulatory.buildMovement(context, time_elapsed, gravity, controller_left, controller_right, controller_up, controller_down);
+            for (int i = 0; i<sprites_list.size(); i++) {
+                if (sprites_list.get(i) instanceof Ambulatory) {
+                    ((Ambulatory) sprites_list.get(i)).buildMovement(tilemap, time_elapsed, gravity, controller_left, controller_right, controller_up, controller_down);
                 }
+            }
+        }
+    }
+
+    public void updateEntities(Long time_elapsed) {
+        synchronized (sprites_list) {
+            for (int i = 0; i < sprites_list.size(); i++) {
+                sprites_list.get(i).update(time_elapsed);
             }
         }
     }
