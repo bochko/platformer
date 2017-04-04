@@ -38,12 +38,8 @@ import java.io.*;
  * @author David Cairns
  */
 @SuppressWarnings("Duplicates")
-public class DecorativeTileMap
+public class SpriteMap
 {
-
-    public static final int DECORATIVE_MAP_DEFAULT_ANIM_ROWS = 1;
-    public static final int DECORATIVE_MAP_DEFAULT_ANIM_COLS = 1;
-
     private Tile[][] tmap;		// The tile map grid, initially null
     private int mapWidth=0;		// The maps width in tiles
     private int mapHeight=0;	// The maps height in tiles

@@ -2,15 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4934efc3-6b0e-466e-88e1-4350fa22e781" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/hud/health_bar.png" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/images/hud/score_pane.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/player/PlayerEntity.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/player/PlayerEntity.class" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/lazarus.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/game/actors/mechanics/Mortal.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/levels/readytoplay/LevelOne.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/subsidiaries/visuals/DecorativeTileMap.class" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/game/levels/LevelBundle.java" afterPath="$PROJECT_DIR$/src/game/levels/mechanics/LevelPuppeteer.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/game/levels/readytoplay/LevelOne.java" afterPath="$PROJECT_DIR$/src/game/levels/premade/LevelOne.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/game/subsidiaries/visuals/DecorativeTileMap.java" afterPath="$PROJECT_DIR$/src/game/subsidiaries/visuals/SpriteMap.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/cairns/david/engine/Sprite.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/cairns/david/engine/Sprite.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/enemy/EnemyEntity.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/enemy/EnemyEntity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/projectiles/Projectile.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/actors/projectiles/Projectile.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/core/Core.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/core/Core.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/subsidiaries/visuals/HeadsUpDisplay.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/subsidiaries/visuals/HeadsUpDisplay.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/levels/LevelBundle.class" afterPath="$PROJECT_DIR$/out/production/cscu9n6_game_assignment/game/levels/LevelBundle.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cairns/david/engine/Sprite.java" afterPath="$PROJECT_DIR$/src/cairns/david/engine/Sprite.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" afterPath="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java" afterPath="$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java" afterPath="$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/core/Core.java" afterPath="$PROJECT_DIR$/src/game/core/Core.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/subsidiaries/visuals/HeadsUpDisplay.java" afterPath="$PROJECT_DIR$/src/game/subsidiaries/visuals/HeadsUpDisplay.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" afterPath="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,8 +44,18 @@
       <file leaf-file-name="Core.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/game/core/Core.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="510">
-              <caret line="234" column="37" lean-forward="false" selection-start-line="234" selection-start-column="37" selection-end-line="234" selection-end-column="37" />
+            <state relative-caret-position="234">
+              <caret line="61" column="4" lean-forward="true" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="4" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="LevelPuppeteer.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/game/levels/mechanics/LevelPuppeteer.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="252">
+              <caret line="14" column="29" lean-forward="true" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -43,91 +63,47 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mainmenu.sources" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sounds/soundtrack/mainmenu.sources">
+      <file leaf-file-name="LevelOne.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/levels/premade/LevelOne.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="45" lean-forward="false" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+            <state relative-caret-position="252">
+              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GameCore.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/GameCore.java">
+      <file leaf-file-name="EnemyEntity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="27" column="28" lean-forward="false" selection-start-line="27" selection-start-column="28" selection-end-line="27" selection-end-column="28" />
+            <state relative-caret-position="1548">
+              <caret line="225" column="0" lean-forward="true" selection-start-line="225" selection-start-column="0" selection-end-line="225" selection-end-column="0" />
+              <folding>
+                <element signature="e#8003#8004#0" expanded="true" />
+                <element signature="e#8031#8032#0" expanded="true" />
+                <element signature="e#8084#8085#0" expanded="true" />
+                <element signature="e#8118#8119#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CollisionEngine.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/physics/CollisionEngine.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="384">
+              <caret line="110" column="24" lean-forward="true" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TileMap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/TileMap.java">
+      <file leaf-file-name="Mortal.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/actors/mechanics/Mortal.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4964">
-              <caret line="315" column="5" lean-forward="false" selection-start-line="315" selection-start-column="5" selection-end-line="315" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DecorativeTileMap.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/DecorativeTileMap.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6477">
-              <caret line="406" column="0" lean-forward="false" selection-start-line="406" selection-start-column="0" selection-end-line="406" selection-end-column="0" />
+            <state relative-caret-position="270">
+              <caret line="15" column="29" lean-forward="false" selection-start-line="15" selection-start-column="29" selection-end-line="15" selection-end-column="29" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="backdrop1_map.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/maps/backdrop1_map.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="8" column="64" lean-forward="false" selection-start-line="8" selection-start-column="64" selection-end-line="8" selection-end-column="64" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="HeadsUpDisplay.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/HeadsUpDisplay.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="471">
-              <caret line="42" column="9" lean-forward="true" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PlayerEntity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="59" column="31" lean-forward="false" selection-start-line="59" selection-start-column="31" selection-end-line="59" selection-end-column="31" />
-              <folding>
-                <element signature="e#7243#7244#0" expanded="true" />
-                <element signature="e#7285#7286#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AudioEmitter.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/audio/AudioEmitter.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
-              <folding>
-                <element signature="e#401#402#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -135,8 +111,28 @@
       <file leaf-file-name="Sprite.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/Sprite.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5032">
-              <caret line="362" column="5" lean-forward="false" selection-start-line="362" selection-start-column="5" selection-end-line="362" selection-end-column="5" />
+            <state relative-caret-position="-2838">
+              <caret line="140" column="28" lean-forward="false" selection-start-line="140" selection-start-column="28" selection-end-line="140" selection-end-column="28" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SpriteMap.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/SpriteMap.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-5670">
+              <caret line="41" column="1" lean-forward="false" selection-start-line="41" selection-start-column="1" selection-end-line="41" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PlayerEntity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="288">
+              <caret line="43" column="36" lean-forward="true" selection-start-line="43" selection-start-column="36" selection-end-line="43" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -147,8 +143,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Interface" />
         <option value="Class" />
+        <option value="Interface" />
       </list>
     </option>
   </component>
@@ -171,27 +167,32 @@
         <option value="$PROJECT_DIR$/src/game/physics/Collidable.java" />
         <option value="$PROJECT_DIR$/src/game/actors/EnemyEntity.java" />
         <option value="$PROJECT_DIR$/src/game/actors/Player.java" />
-        <option value="$PROJECT_DIR$/src/cairns/david/engine/Sprite.java" />
         <option value="$PROJECT_DIR$/src/game/actors/Ambulatory.java" />
-        <option value="$PROJECT_DIR$/src/game/levels/LevelBundle.java" />
         <option value="$PROJECT_DIR$/src/game/actors/player/Player.java" />
         <option value="$PROJECT_DIR$/src/game/actors/consumable/ConsumableEntity.java" />
-        <option value="$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java" />
         <option value="$PROJECT_DIR$/src/game/actors/mechanics/Ambulatory.java" />
         <option value="$PROJECT_DIR$/sounds/soundtrack/mainmenu.sources" />
         <option value="$PROJECT_DIR$/src/game/actors/enemy/EnemyMove.java" />
-        <option value="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" />
         <option value="$PROJECT_DIR$/maps/map.txt" />
-        <option value="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" />
         <option value="$PROJECT_DIR$/src/cairns/david/engine/GameCore.java" />
         <option value="$PROJECT_DIR$/src/game/subsidiaries/audio/AudioEmitter.java" />
         <option value="$PROJECT_DIR$/src/game/levels/readytoplay/LevelOne.java" />
         <option value="$PROJECT_DIR$/maps/foredrop1_map.txt" />
-        <option value="$PROJECT_DIR$/src/game/subsidiaries/visuals/DecorativeTileMap.java" />
         <option value="$PROJECT_DIR$/maps/backdrop1_map.txt" />
-        <option value="$PROJECT_DIR$/src/game/core/Core.java" />
         <option value="$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java" />
         <option value="$PROJECT_DIR$/src/game/subsidiaries/visuals/HeadsUpDisplay.java" />
+        <option value="$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java" />
+        <option value="$PROJECT_DIR$/src/game/subsidiaries/visuals/DecorativeTileMap.java" />
+        <option value="$PROJECT_DIR$/src/game/subsidiaries/visuals/SpriteMap.java" />
+        <option value="$PROJECT_DIR$/src/cairns/david/engine/Sprite.java" />
+        <option value="$PROJECT_DIR$/src/game/levels/LevelBundle.java" />
+        <option value="$PROJECT_DIR$/src/game/actors/mechanics/Mortal.java" />
+        <option value="$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java" />
+        <option value="$PROJECT_DIR$/src/game/physics/CollisionEngine.java" />
+        <option value="$PROJECT_DIR$/src/game/levels/LevelPuppeteer.java" />
+        <option value="$PROJECT_DIR$/src/game/levels/premade/LevelOne.java" />
+        <option value="$PROJECT_DIR$/src/game/core/Core.java" />
+        <option value="$PROJECT_DIR$/src/game/levels/mechanics/LevelPuppeteer.java" />
       </list>
     </option>
   </component>
@@ -202,10 +203,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="x" value="-1" />
+    <option name="y" value="-11" />
+    <option name="width" value="1922" />
+    <option name="height" value="1092" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -222,6 +223,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
@@ -283,10 +285,6 @@
               <option name="myItemId" value="subsidiaries" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="audio" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -331,6 +329,10 @@
               <option name="myItemId" value="levels" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="premade" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -354,7 +356,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="readytoplay" />
+              <option name="myItemId" value="mechanics" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -505,10 +507,6 @@
               <option name="myItemId" value="actors" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="consumable" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -521,10 +519,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="engine" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -626,7 +620,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -959,6 +952,13 @@
       <envs />
       <method />
     </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerJest" factoryName="Jest">
+      <node-interpreter value="project" />
+      <working-dir value="" />
+      <envs />
+      <scope-kind value="ALL" />
+      <method />
+    </configuration>
     <configuration default="true" type="JavaScriptTestRunnerProtractor" factoryName="Protractor">
       <config-file value="" />
       <node-interpreter value="project" />
@@ -1091,27 +1091,28 @@
       <workItem from="1491231863224" duration="8781000" />
       <workItem from="1491255064120" duration="1661000" />
       <workItem from="1491256825045" duration="2364000" />
+      <workItem from="1491320454318" duration="7875000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="104018000" />
+    <option name="totallyTimeSpent" value="111893000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-1" y="-11" width="1922" height="1092" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Nl-Palette" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32769555" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32723576" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3372093" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33638212" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Properties" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -1180,13 +1181,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/game/actors/consumable/ConsumableEntity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/game/physics/Collidable.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
@@ -1238,10 +1232,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1872">
           <caret line="112" column="16" lean-forward="false" selection-start-line="112" selection-start-column="16" selection-end-line="112" selection-end-column="16" />
-          <folding>
-            <element signature="e#7243#7244#0" expanded="true" />
-            <element signature="e#7285#7286#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1249,9 +1240,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1116">
           <caret line="37" column="23" lean-forward="false" selection-start-line="37" selection-start-column="23" selection-end-line="37" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1275,9 +1264,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="450">
           <caret line="37" column="25" lean-forward="true" selection-start-line="37" selection-start-column="25" selection-end-line="37" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1293,10 +1280,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2682">
           <caret line="157" column="38" lean-forward="false" selection-start-line="157" selection-start-column="38" selection-end-line="157" selection-end-column="38" />
-          <folding>
-            <element signature="e#7243#7244#0" expanded="true" />
-            <element signature="e#7285#7286#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1376,33 +1360,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/levels/LevelBundle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
-          <caret line="78" column="54" lean-forward="false" selection-start-line="78" selection-start-column="54" selection-end-line="78" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="17" column="1" lean-forward="true" selection-start-line="17" selection-start-column="1" selection-end-line="17" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/GameCoreFS.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="11" column="45" lean-forward="false" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/physics/CollisionEngine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1260">
-          <caret line="73" column="33" lean-forward="false" selection-start-line="73" selection-start-column="33" selection-end-line="73" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -1418,21 +1379,6 @@
             <element signature="e#584#585#0" expanded="false" />
             <element signature="e#612#613#0" expanded="false" />
             <element signature="e#637#638#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1386">
-          <caret line="89" column="69" lean-forward="false" selection-start-line="89" selection-start-column="69" selection-end-line="89" selection-end-column="69" />
-          <folding>
-            <element signature="e#7026#7027#0" expanded="false" />
-            <element signature="e#7065#7066#0" expanded="false" />
-            <element signature="e#7128#7129#0" expanded="false" />
-            <element signature="e#7184#7185#0" expanded="false" />
-            <element signature="e#7229#7230#0" expanded="false" />
-            <element signature="e#7271#7272#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1459,38 +1405,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/levels/readytoplay/LevelOne.java">
+    <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/audio/AudioEmitter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="32" column="0" lean-forward="false" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
+        <state relative-caret-position="324">
+          <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
+          <folding>
+            <element signature="e#401#402#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sounds/soundtrack/mainmenu.sources">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="3" column="45" lean-forward="false" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/TileMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5256">
+          <caret line="315" column="5" lean-forward="false" selection-start-line="315" selection-start-column="5" selection-end-line="315" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/audio/AudioEmitter.java">
+    <entry file="file://$PROJECT_DIR$/src/game/actors/projectiles/Projectile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="32" lean-forward="false" selection-start-line="18" selection-start-column="32" selection-end-line="18" selection-end-column="32" />
-          <folding>
-            <element signature="e#401#402#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/Sprite.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5032">
-          <caret line="362" column="5" lean-forward="false" selection-start-line="362" selection-start-column="5" selection-end-line="362" selection-end-column="5" />
+        <state relative-caret-position="360">
+          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sounds/soundtrack/mainmenu.sources">
+    <entry file="file://$PROJECT_DIR$/maps/backdrop1_map.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="45" lean-forward="false" selection-start-line="3" selection-start-column="45" selection-end-line="3" selection-end-column="45" />
+        <state relative-caret-position="144">
+          <caret line="8" column="64" lean-forward="false" selection-start-line="8" selection-start-column="64" selection-end-line="8" selection-end-column="64" />
           <folding />
         </state>
       </provider>
@@ -1503,57 +1457,87 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/maps/backdrop1_map.txt">
+    <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/Sprite.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="8" column="64" lean-forward="false" selection-start-line="8" selection-start-column="64" selection-end-line="8" selection-end-column="64" />
+        <state relative-caret-position="-2838">
+          <caret line="140" column="28" lean-forward="false" selection-start-line="140" selection-start-column="28" selection-end-line="140" selection-end-column="28" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cairns/david/engine/TileMap.java">
+    <entry file="file://$PROJECT_DIR$/src/game/actors/enemy/EnemyEntity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4964">
-          <caret line="315" column="5" lean-forward="false" selection-start-line="315" selection-start-column="5" selection-end-line="315" selection-end-column="5" />
+        <state relative-caret-position="1548">
+          <caret line="225" column="0" lean-forward="true" selection-start-line="225" selection-start-column="0" selection-end-line="225" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#8003#8004#0" expanded="true" />
+            <element signature="e#8031#8032#0" expanded="true" />
+            <element signature="e#8084#8085#0" expanded="true" />
+            <element signature="e#8118#8119#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/DecorativeTileMap.java">
+    <entry file="file://$PROJECT_DIR$/src/game/actors/mechanics/Mortal.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6477">
-          <caret line="406" column="0" lean-forward="false" selection-start-line="406" selection-start-column="0" selection-end-line="406" selection-end-column="0" />
+        <state relative-caret-position="270">
+          <caret line="15" column="29" lean-forward="false" selection-start-line="15" selection-start-column="29" selection-end-line="15" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/HeadsUpDisplay.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-12">
+          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/SpriteMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-5670">
+          <caret line="41" column="1" lean-forward="false" selection-start-line="41" selection-start-column="1" selection-end-line="41" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="43" column="36" lean-forward="true" selection-start-line="43" selection-start-column="36" selection-end-line="43" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/physics/CollisionEngine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="110" column="24" lean-forward="true" selection-start-line="110" selection-start-column="24" selection-end-line="110" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/game/levels/premade/LevelOne.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="252">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/game/core/Core.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="510">
-          <caret line="234" column="37" lean-forward="false" selection-start-line="234" selection-start-column="37" selection-end-line="234" selection-end-column="37" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="234">
+          <caret line="61" column="4" lean-forward="true" selection-start-line="61" selection-start-column="4" selection-end-line="61" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/actors/player/PlayerEntity.java">
+    <entry file="file://$PROJECT_DIR$/src/game/levels/mechanics/LevelPuppeteer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="59" column="31" lean-forward="false" selection-start-line="59" selection-start-column="31" selection-end-line="59" selection-end-column="31" />
-          <folding>
-            <element signature="e#7243#7244#0" expanded="true" />
-            <element signature="e#7285#7286#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/game/subsidiaries/visuals/HeadsUpDisplay.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="471">
-          <caret line="42" column="9" lean-forward="true" selection-start-line="42" selection-start-column="9" selection-end-line="42" selection-end-column="9" />
+        <state relative-caret-position="252">
+          <caret line="14" column="29" lean-forward="true" selection-start-line="14" selection-start-column="29" selection-end-line="14" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

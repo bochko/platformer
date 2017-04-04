@@ -1,9 +1,10 @@
-package game.levels;
+package game.levels.mechanics;
 
 import game.actors.mechanics.Ambulatory;
 import game.actors.enemy.EnemyEntity;
 
 import cairns.david.engine.*;
+import game.actors.mechanics.Mortal;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -11,12 +12,12 @@ import java.util.LinkedList;
 /**
  * Created by lazarus on 29/03/17.
  */
-public class LevelBundle {
+public class LevelPuppeteer {
 
     private TileMap tilemap;
     private LinkedList<Sprite> sprites_list;
 
-    public LevelBundle() {
+    public LevelPuppeteer() {
         this.tilemap = tilemap;
         this.sprites_list = new LinkedList<Sprite>();
     }
@@ -27,7 +28,7 @@ public class LevelBundle {
      * @param sprite the sprite to add in to the level bundle
      * @return true if ok, false if not an instance of any known non-player sprite type
      */
-    public boolean addSpriteToLevel(Sprite sprite) {
+    public boolean surrenderSpriteToJurisdiction(Sprite sprite) {
         if(sprite instanceof EnemyEntity) {
             synchronized (sprites_list) {
                 sprites_list.add(sprite);
@@ -44,9 +45,9 @@ public class LevelBundle {
      * @param sprites array of non-player sprites
      * @return false if any of the sprites are of non-player type and terminates
      */
-    public boolean addSpriteToLevel(Sprite[] sprites) {
+    public boolean surrenderSpriteToJurisdiction(Sprite[] sprites) {
         for(Sprite sprite: sprites) {
-            addSpriteToLevel(sprite);
+            surrenderSpriteToJurisdiction(sprite);
         }
         return true;
     }
@@ -58,7 +59,7 @@ public class LevelBundle {
      * @param x_offset the x-offset of the scene
      * @param y_offset the y-offset of the scene
      */
-    public void spritesRenderSelf(Graphics2D g, int x_offset, int y_offset) {
+    public void enforceRender(Graphics2D g, int x_offset, int y_offset) {
         synchronized (sprites_list) {
             for (Sprite sprite: sprites_list) {
                 sprite.setOffsets(x_offset, y_offset);
@@ -78,14 +79,28 @@ public class LevelBundle {
      * @param controller_up controller up pressed?
      * @param controller_down controller down pressed?
      */
-    public void spritesBuildMovement(TileMap context, Long time_elapsed, float gravity,
-                                     boolean controller_left, boolean controller_right,
-                                     boolean controller_up, boolean controller_down) {
+    public void enforceMovement(TileMap context, Long time_elapsed, float gravity,
+                                boolean controller_left, boolean controller_right,
+                                boolean controller_up, boolean controller_down) {
         synchronized (sprites_list) {
             for (Sprite sprite: sprites_list) {
                 if (sprite instanceof Ambulatory) {
                     Ambulatory ambulatory = (Ambulatory) sprite;
                     ambulatory.buildMovement(context, time_elapsed, gravity, controller_left, controller_right, controller_up, controller_down);
+                }
+            }
+        }
+    }
+
+    
+    public void purgeDeadMortals() {
+        synchronized (sprites_list) {
+            for (Sprite sprite : sprites_list) {
+                if (sprite instanceof Mortal) {
+                    Mortal mortal = (Mortal) sprite;
+                    if (mortal.getState() == Mortal.STATE_DEAD) {
+                        sprites_list.remove(sprite);
+                    }
                 }
             }
         }

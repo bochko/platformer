@@ -13,7 +13,10 @@ import java.awt.geom.*;
 public class Sprite {
 
 	// The current Animation to use for this sprite
-    private Animation anim;		
+    private Animation anim;
+
+    // state of sprite
+    private int state;
 
     // Position (pixels)
     private float x;
@@ -35,6 +38,7 @@ public class Sprite {
 
     // If render is 'true', the sprite will be drawn when requested
     private boolean render;
+
     
     // The draw offset associated with this sprite. Used to draw it
     // relative to specific on screen position (usually the player)

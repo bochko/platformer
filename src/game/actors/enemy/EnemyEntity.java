@@ -5,6 +5,7 @@ import cairns.david.engine.Sprite;
 import cairns.david.engine.TileMap;
 import cairns.david.engine.Velocity;
 import game.actors.mechanics.Ambulatory;
+import game.actors.mechanics.Mortal;
 import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
 import game.physics.Collidable;
@@ -17,13 +18,14 @@ import java.util.Random;
 /**
  * Created by boyan on 23/02/17.
  */
-public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
+public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Mortal{
 
     private final int MOVEMENT_RADIUS = 1000;
     private final int DETECTION_RADIUS = 600;
     private float ORIGIN_X;
     private float ORIGIN_Y;
 
+    private int state;
 
     private int last_movement = EnemyMove.ENEMY_NO_MOVEMENT;
 
@@ -62,7 +64,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
         movement_velocity = new Velocity();
         // create the collision bounds of the sprite
         jumping_velocity = new Velocity();
-
+        state = Mortal.STATE_ALIVE;
 
     }
 
@@ -76,47 +78,54 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
      */
     @SuppressWarnings("Duplicates")
     public void buildMovement(TileMap context, Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
+        // if sprite is alive compute further movement
+        if(getState() == Mortal.STATE_ALIVE) {
+            float temp_dx = 0;
+            float temp_dy = 0;
 
-        float temp_dx = 0;
-        float temp_dy = 0;
+            EnemyMove new_move = simulateInput(context, time_elapsed);
 
-        EnemyMove new_move = simulateInput(context, time_elapsed);
+            temp_dx += new_move.getDx();
+            temp_dy += new_move.getDy();
+            last_movement = new_move.getMove();
 
-        temp_dx += new_move.getDx();
-        temp_dy += new_move.getDy();
-        last_movement = new_move.getMove();
+            movement_velocity.setVelocity(gravity * time_elapsed, 90);
+            temp_dy += (float) movement_velocity.getdy() + getVelocityY();
 
-        movement_velocity.setVelocity(gravity * time_elapsed, 90);
-        temp_dy += (float) movement_velocity.getdy() + getVelocityY();
-
-        int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed);
-        // Set sprite movement_velocity according to delta values calculated and collision type
-        if (collision_type == CollisionEngine.COLLISION_NONE) {
-            super.setVelocityX(temp_dx);
-            super.setVelocityY(temp_dy);
-        } else {
-            if(collision_type == CollisionEngine.COLLISION_X_AXIS) {
-                super.setVelocityY(temp_dy);
-                super.setVelocityX(0f);
-
-            }
-            if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
-                if(temp_dy > 0) {
-                    is_jumping = false;
-                }
+            int collision_type = CollisionEngine.simpleSpriteToMapCollision(this, context, temp_dx, temp_dy, time_elapsed);
+            // Set sprite movement_velocity according to delta values calculated and collision type
+            if (collision_type == CollisionEngine.COLLISION_NONE) {
                 super.setVelocityX(temp_dx);
-                super.setVelocityY(0f);
+                super.setVelocityY(temp_dy);
+            } else {
+                if(collision_type == CollisionEngine.COLLISION_X_AXIS) {
+                    super.setVelocityY(temp_dy);
+                    super.setVelocityX(0f);
+
+                }
+                if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
+                    if(temp_dy > 0) {
+                        is_jumping = false;
+                    }
+                    super.setVelocityX(temp_dx);
+                    super.setVelocityY(0f);
 
 
-            }
-            if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
+                }
+                if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
 
-                super.stop();
-                if(temp_dy > 0) {
-                    is_jumping = false;
+                    super.stop();
+                    if(temp_dy > 0) {
+                        is_jumping = false;
+                    }
                 }
             }
+        } else if (getState() == Mortal.STATE_DYING) {
+            super.setVelocityX(0.0f);
+            super.setVelocityY(0.0f);
         }
+
+
     }
 
     private EnemyMove simulateInput(TileMap context, Long time_elapsed) {
@@ -151,7 +160,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
         temp_dx = (float) movement_velocity.getdx();
         temp_dy = (float) movement_velocity.getdy();
 
-        if(CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed)
+        if(CollisionEngine.simpleSpriteToMapCollision(this, context, temp_dx, temp_dy, time_elapsed)
                 == CollisionEngine.COLLISION_NONE) {
             possible_moves.add(new EnemyMove(temp_dx, temp_dy, EnemyMove.ENEMY_MOVEMENT_LEFT));
         }
@@ -161,7 +170,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
         temp_dx = (float) movement_velocity.getdx();
         temp_dy = (float) movement_velocity.getdy();
 
-        if(CollisionEngine.checkSimpleCollision(this, context, temp_dx, temp_dy, time_elapsed)
+        if(CollisionEngine.simpleSpriteToMapCollision(this, context, temp_dx, temp_dy, time_elapsed)
                 == CollisionEngine.COLLISION_NONE) {
             possible_moves.add(new EnemyMove(temp_dx, temp_dy, EnemyMove.ENEMY_MOVEMENT_RIGHT));
         }
@@ -213,5 +222,15 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory{
     public void setY(float y) {
         super.setY(y);
         ORIGIN_Y = y;
+    }
+
+    @Override
+    public int getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(int state) {
+        this.state = state;
     }
 }

@@ -1,0 +1,17 @@
+package game.actors.mechanics;
+
+import cairns.david.engine.Sprite;
+
+/**
+ * Created by lazarus on 04/04/17.
+ */
+public interface Mortal {
+
+    int STATE_ALIVE = 71;
+    int STATE_DYING = 72;
+    int STATE_DEAD = 73;
+
+    int getState();
+
+    void setState(int state);
+}

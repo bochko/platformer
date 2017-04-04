@@ -5,7 +5,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,9 +15,8 @@ import cairns.david.engine.*;
 import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
 import game.actors.enemy.EnemyEntity;
-import game.subsidiaries.visuals.DecorativeTileMap;
+import game.subsidiaries.visuals.SpriteMap;
 import game.subsidiaries.visuals.HeadsUpDisplay;
-import sun.java2d.loops.FillRect;
 
 import javax.swing.*;
 
@@ -75,8 +73,8 @@ public class Core extends GameCore implements MouseListener
     private final LinkedList<Projectile> projectiles = new LinkedList<>();
 
     private TileMap tmap = new TileMap();	// Our tile map, note that we load it in init()
-    private DecorativeTileMap backdrop_tmap = new DecorativeTileMap();
-    private DecorativeTileMap foredrop_tmap = new DecorativeTileMap();
+    private SpriteMap backdrop_tmap = new SpriteMap();
+    private SpriteMap foredrop_tmap = new SpriteMap();
     
     private long total;         			// The score will be the total time elapsed since a crash
 

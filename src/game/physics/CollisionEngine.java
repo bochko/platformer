@@ -4,6 +4,7 @@ import cairns.david.engine.Tile;
 import cairns.david.engine.TileMap;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 
 /***
  * Contains static methods for calculating colission on both axes
@@ -29,7 +30,7 @@ public class CollisionEngine {
      * @param delta_y delta_y proposal of entity
      * @return COLLISION_NONE = -1 / COLLISION_X_AXIS = 0; / COLLISION_Y_AXIS = 1;
      */
-    public static int checkSimpleCollision(Collidable entity, TileMap tilemap, float delta_x, float delta_y, long elapsed) {
+    public static int simpleSpriteToMapCollision(Collidable entity, TileMap tilemap, float delta_x, float delta_y, long elapsed) {
         // get entity bounds
         Rectangle.Float entity_bounds = entity.getCollisionBounds();
 
@@ -100,6 +101,16 @@ public class CollisionEngine {
                 return  CollisionEngine.COLLISION_NONE;
             }
         }
+    }
+
+    public static boolean spriteToSpriteCollision(Collidable entity1, Collidable entity2) {
+        Rectangle2D.Float bound1 = entity1.getCollisionBounds();
+        Rectangle2D.Float bound2 = entity2.getCollisionBounds();
+
+        if(bound1.intersects(bound2)) {
+            return true;
+        }
+        return false;
     }
 }
 

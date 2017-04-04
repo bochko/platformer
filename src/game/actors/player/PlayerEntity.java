@@ -138,7 +138,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
 
 
-        int collision_type = CollisionEngine.checkSimpleCollision(this, context, temp_dx, super.getVelocityY() + temp_dy, time_elapsed);
+        int collision_type = CollisionEngine.simpleSpriteToMapCollision(this, context, temp_dx, super.getVelocityY() + temp_dy, time_elapsed);
         // Set sprite movement_velocity according to delta values calculated and collision type
         if (collision_type == CollisionEngine.COLLISION_NONE) {
             super.setVelocityX(temp_dx); // we want linear change in x
