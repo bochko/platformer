@@ -29,7 +29,7 @@ import javax.swing.*;
  */
 @SuppressWarnings("serial")
 
-public class Core extends GameCore implements MouseListener
+public class Core extends GameCore
 {
 	// Useful game constants
 	static int SCREEN_WIDTH = 512;
@@ -47,7 +47,7 @@ public class Core extends GameCore implements MouseListener
     private boolean player_right = false;
 
     // PID Controller
-    PIDController PID;
+    private static final PIDController pidController = new PIDController();
 
     // Level
     private LevelOne level;
@@ -76,7 +76,8 @@ public class Core extends GameCore implements MouseListener
         // set cursor to a simple crosshair
         setCursor(Cursor.CROSSHAIR_CURSOR);
         // add itself as a mouse listener
-        this.addMouseListener(this);
+        this.addMouseListener(pidController);
+        this.addKeyListener(pidController);
         initializeLevel();
     }
 
@@ -86,7 +87,7 @@ public class Core extends GameCore implements MouseListener
      * the game.
      */
     public void initializeLevel() {
-        level = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT);
+        level = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
     }
     
     /**
@@ -121,15 +122,12 @@ public class Core extends GameCore implements MouseListener
      */    
     public void update(long elapsed)
     {
-        level.update(elapsed, player_left, player_right, player_up, player_down);
+        level.update(elapsed, pidController);
     }
 
     /**
      * Checks and handles collisions with the tile map for the
      * given sprite 's'. Initial functionality is limited...
-     * 
-     * @param s			The Sprite to check collisions for
-     * @param elapsed	How time has gone by
      */
     /*public void handleTileMapCollisions(Sprite s, long elapsed)
     {
@@ -146,56 +144,9 @@ public class Core extends GameCore implements MouseListener
         	playerEntity.setVelocityY(-playerEntity.getVelocityY() * (0.03f * elapsed));
         }
     }*/
-    
-    
-     
-    /**
-     * Override of the keyPressed event defined in GameCore to catch our
-     * own events
-     * 
-     *  @param e The event that has been generated
-     */
-    public void keyPressed(KeyEvent e)
-    { 
-    	int key = e.getKeyCode();
-    	
-    	if (key == KeyEvent.VK_ESCAPE) stop();
-    	
-    	if (key == KeyEvent.VK_UP) player_up = true;
 
-    	if (key == KeyEvent.VK_RIGHT) player_right = true;
-
-    	if (key == KeyEvent.VK_LEFT) player_left = true;
-
-    	if (key == KeyEvent.VK_DOWN) player_down = true;
-    	   	
-    	if (key == KeyEvent.VK_S)
-    	{
-    		// Example of playing a sound as a thread
-    		Sound s = new Sound("sounds/soundtrack/mainmenu.wav");
-    		s.start();
-    	}
-    }
-
-	public void keyReleased(KeyEvent e) { 
-
-		int key = e.getKeyCode();
-
-		// Switch statement instead of lots of ifs...
-		// Need to use break to prevent fall through.
-		switch (key)
-		{
-			case KeyEvent.VK_ESCAPE : stop(); break;
-			case KeyEvent.VK_UP     : player_up = false; break;
-            case KeyEvent.VK_RIGHT  : player_right = false; break;
-            case KeyEvent.VK_LEFT   : player_left = false; break;
-            case KeyEvent.VK_DOWN   : player_down = false; break;
-			default :  break;
-		}
-	}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
+   // @Override
+   // public void mouseClicked(MouseEvent e) {
         /*int x = (int) (e.getX()/scale);
         int y = (int) (e.getY()/scale);
         System.out.println("Cursor pos: " + x + y);
@@ -213,25 +164,7 @@ public class Core extends GameCore implements MouseListener
         synchronized (projectiles) {
             projectiles.add(proj);
         }*/
-    }
+    //}
 
-    @Override
-    public void mousePressed(MouseEvent e) {
 
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
 }

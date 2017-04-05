@@ -8,6 +8,8 @@ import game.actors.mechanics.Ambulatory;
 import game.actors.mechanics.Mortal;
 import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
+import game.core.PIDController;
+import game.levels.mechanics.LevelPuppeteer;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
 
@@ -20,8 +22,11 @@ import java.util.Random;
  */
 public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Mortal{
 
-    private final int MOVEMENT_RADIUS = 1000;
     private final int DETECTION_RADIUS = 600;
+    private final int PROJECTILE_TIMER_DEFAULT = 1500;
+    private final int DEATH_TIMER_DEFAULT = 2000;
+    private final float BASE_MOVEMENT_SPEED_DEFAULT = 0.4f;
+
     private float ORIGIN_X;
     private float ORIGIN_Y;
 
@@ -41,8 +46,15 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
 
     private float damage_multiplier;
 
+    private long projectile_timer;
+    private long death_timer;
+
+    private Animation anim_dying;
+
     private Velocity movement_velocity;
     private Velocity jumping_velocity;
+
+    private LevelPuppeteer master;
 
     /***
      * Creates a new EnemyEntity object with the specified Animation,
@@ -52,9 +64,10 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
      * @param health_points The initial and max health points of the player
      * @param base_movement_speed PlayerEntity's base movement speed
      */
-    public EnemyEntity(Animation anim, int health_points, float base_movement_speed) {
+    public EnemyEntity(Animation anim, Animation anim_dying, int health_points, float base_movement_speed) {
         // call the super constructor
         super(anim);
+        this.anim_dying = anim_dying;
         // initialize all properties
         this.health_points = health_points;
         this.base_movement_speed = base_movement_speed;
@@ -65,7 +78,13 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
         // create the collision bounds of the sprite
         jumping_velocity = new Velocity();
         state = Mortal.STATE_ALIVE;
+        projectile_timer = 1400;
+        death_timer = 2300;
 
+    }
+
+    public void setMaster(LevelPuppeteer master) {
+        this.master = master;
     }
 
     /***
@@ -77,7 +96,12 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
      * @param time_elapsed time elapsed since last frame in ms
      */
     @SuppressWarnings("Duplicates")
-    public void buildMovement(TileMap context, Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
+    public void buildMovement(TileMap context, Long time_elapsed, float gravity, PIDController pidController) {
+        // if sprite is dying
+        if (getState() == Mortal.STATE_TRIGGER_DYING || getState() == Mortal.STATE_DYING) {
+            setVelocityY(0.0f);
+            setVelocityX(0.0f);
+        }
         // if sprite is alive compute further movement
         if(getState() == Mortal.STATE_ALIVE) {
             float temp_dx = 0;
@@ -120,7 +144,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
                     }
                 }
             }
-        } else if (getState() == Mortal.STATE_DYING) {
+        } else if (getState() == Mortal.STATE_TRIGGER_DYING) {
             super.setVelocityX(0.0f);
             super.setVelocityY(0.0f);
         }
@@ -178,15 +202,47 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
         return possible_moves;
     }
 
+    @Override
+    public void update(long time_elapsed) {
+        super.update(time_elapsed);
+        if (getState() == Mortal.STATE_ALIVE) {
+            projectile_timer -= time_elapsed;
+            expelTimedProjectile();
+        }
+        if (getState() == Mortal.STATE_TRIGGER_DYING) {
+            setAnimation(anim_dying);
+            setAnimationSpeed(1.0f);
+            setState(Mortal.STATE_DYING);
+        }
+        if (getState() == Mortal.STATE_DYING) {
+            if(death_timer <= 0) {
+                setState(Mortal.STATE_DEAD);
+            }
+            death_timer -= time_elapsed;
+        }
+    }
 
-    /***
-     * expells a Projectile
-     * @param projectile a projectile class, created anew
-     * @param mouse_x the x position of the mouse, respective to the g raphics2D context
-     * @param mouse_y the y position of the mouse, respective to the graphics2D context
-     */
-    public void expelProjectile(Projectile projectile, float mouse_x, float mouse_y) {
-        // TODO expel projectile according to the mouse position with origin x, y the sprite centre
+    public void expelTimedProjectile() {
+        if(projectile_timer <=0) {
+            projectile_timer = 1400; // reset projectile timer
+
+                float origin_x = getX();
+                float origin_y = getY();
+                float dest_x = (float)master.snoopOnPlayerPosition().getX();
+                float dest_y = (float)master.snoopOnPlayerPosition().getY();
+                Velocity temp_proj_velocity = new Velocity();
+                Animation proj_anim = new Animation();
+                proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
+                Projectile proj = new Projectile(proj_anim, Projectile.ORIGIN_ENEMY);
+                proj.setX(origin_x);
+                proj.setY(origin_y);
+                double angle = temp_proj_velocity.getAngle(proj.getX(), proj.getY(), dest_x, dest_y);
+                temp_proj_velocity.setVelocity(0.2f, angle);
+                proj.setVelocityX((float)temp_proj_velocity.getdx());
+                proj.setVelocityY((float)temp_proj_velocity.getdy());
+                proj.show();
+                master.conjureProjectile(proj);
+        }
     }
 
     /***
@@ -202,10 +258,6 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
 
     public float getSpeed_multiplier() {
         return speed_multiplier;
-    }
-
-    public void setSpeed_multiplier(float speed_multiplier) {
-        this.speed_multiplier = speed_multiplier;
     }
 
     public float getBase_movement_speed() {
@@ -232,5 +284,10 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
     @Override
     public void setState(int state) {
         this.state = state;
+    }
+
+    @Override
+    public void die() {
+        setState(Mortal.STATE_TRIGGER_DYING);
     }
 }

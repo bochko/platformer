@@ -5,8 +5,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-/**
- * Created by lazarus on 04/04/17.
+/***
+ *
  */
 public class PIDController implements MouseListener, KeyListener {
     public static final int KBD_ESCAPE = KeyEvent.VK_ESCAPE;
@@ -22,6 +22,12 @@ public class PIDController implements MouseListener, KeyListener {
     private boolean right;
     private boolean mouse_primary;
 
+    private int mouseX;
+    private int mouseY;
+
+    /***
+     *
+     */
     public PIDController() {
         esc = false;
         up = false;
@@ -31,10 +37,12 @@ public class PIDController implements MouseListener, KeyListener {
         releaseMouseInput();
     }
 
+    /***
+     *
+     */
     private void releaseMouseInput() {
         mouse_primary = false;
     }
-
 
     /***
      *
@@ -86,6 +94,15 @@ public class PIDController implements MouseListener, KeyListener {
         return return_value;
     }
 
+    public int getMouseX() {
+        return mouseX;
+    }
+
+    public int getMouseY() {
+        return mouseY;
+    }
+
+
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -114,6 +131,8 @@ public class PIDController implements MouseListener, KeyListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         mouse_primary = true;
+        mouseX = e.getX();
+        mouseY = e.getY();
     }
 
     @Override

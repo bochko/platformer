@@ -6,8 +6,11 @@ import cairns.david.engine.TileMap;
 import cairns.david.engine.Velocity;
 import game.actors.mechanics.Ambulatory;
 import game.actors.projectiles.Projectile;
+import game.core.PIDController;
+import game.levels.mechanics.LevelPuppeteer;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
+import game.subsidiaries.animations.EntityAnimationBundle;
 
 import java.awt.*;
 
@@ -24,12 +27,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
     public static final int DEFAULT_BASE_DAMAGE = 25;
     public static final int DEFAULT_SPEED_MULTIPLIER = 2;
-    public static final int DEFAULT_JUMP_HEIGHT_PX = 32;
-    public static final int DEFAULT_JUMP_DURATION_MS = 500;
-
     public static final int PLAYER_MAX_HEALTH = 100;
-
-
 
     private int health_points;
 
@@ -45,20 +43,23 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
     private Velocity movement_velocity;
     private Velocity jumping_velocity;
+    private LevelPuppeteer master;
+    private EntityAnimationBundle animations;
 
 
     /***
      * Creates a new Sprite object with the specified Animation,
      * health points, and base movement speed.
      *
-     * @param anim The animation to use for the sprite.
      * @param base_movement_speed PlayerEntity's base movement speed
      */
-    public PlayerEntity(Animation anim, float base_movement_speed) {
-        // call the super constructor
-        super(anim);
+    public PlayerEntity(EntityAnimationBundle animations, float base_movement_speed) {
+        // call the super constructor, at this point it is not effective to use the Sprite default constructor, but
+        // I'll keep this here just for the sake of using the original code.
+        super(animations.getPlayerAnimation(EntityAnimationBundle.PLAYER_ANIM_IDLE));
         // initialize all properties
-        this.health_points = 50;
+        this.animations = animations;
+        this.health_points = PLAYER_MAX_HEALTH;
         this.base_movement_speed = base_movement_speed;
         this.speed_multiplier = PlayerEntity.DEFAULT_SPEED_MULTIPLIER;
         this.base_damage = PlayerEntity.DEFAULT_BASE_DAMAGE;
@@ -70,6 +71,10 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
     }
 
+    public void setMaster(LevelPuppeteer master) {
+        this.master = master;
+    }
+
     /***
      * Builds the movement of the sprite according to the directional key input
      * and combines those. Checks for collision with the contextual TileMap before
@@ -77,13 +82,9 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
      *
      * @param context the TileMap the sprite is rendered on at the moment;
      * @param time_elapsed time elapsed since last frame in ms
-     * @param left boolean value that indicates if the left direction is activated
-     * @param right boolean value that indicates if the right direction is activated
-     * @param up boolean value that indicates if the up direction is activated
-     * @param down boolean value that indicates if the down direction is activated
      */
     @SuppressWarnings("Duplicates")
-    public void buildMovement(TileMap context, Long time_elapsed, float gravity, boolean left, boolean right, boolean up, boolean down) {
+    public void buildMovement(TileMap context, Long time_elapsed, float gravity, PIDController pidController) {
 
         float temp_dx = 0;
         float temp_dy = 0;
@@ -102,36 +103,31 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
         }*/
 
-        if (right) {
+        if (pidController.isRight()) {
             movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 0);
             temp_dx += (float) movement_velocity.getdx();
             temp_dy += (float) movement_velocity.getdy();
         }
 
-        if (left) {
+        if (pidController.isLeft()) {
             movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 180);
             temp_dx += (float) movement_velocity.getdx();
             temp_dy += (float) movement_velocity.getdy();
         }
 
-        if (down) {
+        if (pidController.isDown()) {
             movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 90);
             temp_dx += (float) movement_velocity.getdx();
             temp_dy += (float) movement_velocity.getdy();
         }
 
-        if (up) {
+        if (pidController.isUp()) {
             if(!is_jumping) {
                 is_jumping = true;
                 movement_velocity.setVelocity(0.2 * getSpeed_multiplier(), 270);
                 temp_dy += (float) movement_velocity.getdy();
             }
         }
-
-        /*if (is_jumping) {
-            temp_dy += jumping_velocity.getdy();
-            jumping_velocity.setVelocity(jumping_velocity.getSpeed() /1.04, -90);
-        }*/
 
             movement_velocity.setVelocity(gravity * time_elapsed, 90);
             temp_dy += (float) movement_velocity.getdy();
@@ -168,16 +164,34 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
             }
         }
 
+        if(pidController.isMouse_primary()) {
+            expelProjectile(pidController.getMouseX(), pidController.getMouseY());
+        }
     }
 
     /***
      * expells a Projectile
-     * @param projectile a projectile class, created anew
      * @param mouse_x the x position of the mouse, respective to the g raphics2D context
      * @param mouse_y the y position of the mouse, respective to the graphics2D context
      */
-    public void expelProjectile(Projectile projectile, float mouse_x, float mouse_y) {
-        // TODO expel projectile according to the mouse position with origin x, y the sprite centre
+    public void expelProjectile(float mouse_x, float mouse_y) {
+        float origin_x = getX();
+        float origin_y = getY();
+        float dest_x = mouse_x/master.getScale_factor();
+        float dest_y = mouse_y/master.getScale_factor();
+        Velocity temp_proj_velocity = new Velocity();
+        Animation proj_anim = new Animation();
+        proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
+        Projectile proj = new Projectile(proj_anim, Projectile.ORIGIN_PLAYER);
+        proj.setX(origin_x);
+        proj.setY(origin_y);
+        double angle = temp_proj_velocity.getAngle(proj.getX(), proj.getY(), dest_x, dest_y);
+        temp_proj_velocity.setVelocity(0.5f, angle);
+        proj.setVelocityX((float)temp_proj_velocity.getdx());
+        proj.setVelocityY((float)temp_proj_velocity.getdy());
+        proj.show();
+        master.conjureProjectile(proj);
+
     }
 
     /***
@@ -191,23 +205,8 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
         return collision_bounds;
     }
 
-    public int getJumpHeight() {
-
-        return DEFAULT_JUMP_HEIGHT_PX;
-    }
-
-    public int getJumpTime() {
-
-        return DEFAULT_JUMP_DURATION_MS;
-    }
-
     public float getSpeed_multiplier() {
-
         return speed_multiplier;
-    }
-
-    public void setSpeed_multiplier(float speed_multiplier) {
-        this.speed_multiplier = speed_multiplier;
     }
 
     public float getBase_movement_speed() {
@@ -220,6 +219,14 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
     public void setHealth_points(int health_points) {
         this.health_points = health_points;
+    }
+
+    public void applyHitByEnemyProjectile() {
+        setHealth_points(getHealth_points() - 20);
+    }
+
+    public void applyHitByEnemyEntity() {
+        setHealth_points(getHealth_points() - 1);
     }
 
 
