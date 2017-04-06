@@ -12,6 +12,8 @@ import game.core.PIDController;
 import game.levels.mechanics.LevelPuppeteer;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
+import game.subsidiaries.animations.AnimationPicker;
+import game.subsidiaries.animations.EntityAnimationBundle;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,30 +24,14 @@ import java.util.Random;
  */
 public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Mortal{
 
-    private final int DETECTION_RADIUS = 600;
-    private final int PROJECTILE_TIMER_DEFAULT = 1500;
-    private final int DEATH_TIMER_DEFAULT = 2000;
-    private final float BASE_MOVEMENT_SPEED_DEFAULT = 0.4f;
-
-    private float ORIGIN_X;
-    private float ORIGIN_Y;
-
+    public static final int DETECTION_RADIUS = 600;
+    public static final long PROJECTILE_TIMER_DEFAULT = 1500L;
+    public static final long DEATH_TIMER_DEFAULT = 2000L;
+    public static final float BASE_MOVEMENT_SPEED_DEFAULT = 0.4f;
     private int state;
-
     private int last_movement = EnemyMove.ENEMY_NO_MOVEMENT;
-
-    private float health_points;
-
     private float base_movement_speed;
-
     private float speed_multiplier;
-
-    private boolean is_jumping = false;
-
-    private int base_damage;
-
-    private float damage_multiplier;
-
     private long projectile_timer;
     private long death_timer;
 
@@ -53,33 +39,30 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
 
     private Velocity movement_velocity;
     private Velocity jumping_velocity;
-
     private LevelPuppeteer master;
+    private EntityAnimationBundle animations;
 
     /***
      * Creates a new EnemyEntity object with the specified Animation,
      * health points, and base movement speed.
      *
-     * @param anim The animation to use for the sprite.
-     * @param health_points The initial and max health points of the player
      * @param base_movement_speed PlayerEntity's base movement speed
      */
-    public EnemyEntity(Animation anim, Animation anim_dying, int health_points, float base_movement_speed) {
+    public EnemyEntity(EntityAnimationBundle animations, float base_movement_speed) {
         // call the super constructor
-        super(anim);
-        this.anim_dying = anim_dying;
+        super(animations.getPlayerAnimation(EntityAnimationBundle.PLAYER_ANIM_IDLE));
+        this.animations = animations;
+        this.anim_dying = animations.getPlayerAnimation(EntityAnimationBundle.PLAYER_ANIM_IDLE);
         // initialize all properties
-        this.health_points = health_points;
         this.base_movement_speed = base_movement_speed;
         this.speed_multiplier = PlayerEntity.DEFAULT_SPEED_MULTIPLIER;
-        this.base_damage = PlayerEntity.DEFAULT_BASE_DAMAGE;
         // initialize movement_velocity class to use
         movement_velocity = new Velocity();
         // create the collision bounds of the sprite
         jumping_velocity = new Velocity();
         state = Mortal.STATE_ALIVE;
-        projectile_timer = 1400;
-        death_timer = 2300;
+        projectile_timer =
+        death_timer = EnemyEntity.DEATH_TIMER_DEFAULT;
 
     }
 
@@ -128,9 +111,6 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
 
                 }
                 if(collision_type == CollisionEngine.COLLISION_Y_AXIS) {
-                    if(temp_dy > 0) {
-                        is_jumping = false;
-                    }
                     super.setVelocityX(temp_dx);
                     super.setVelocityY(0f);
 
@@ -139,17 +119,13 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
                 if(collision_type == CollisionEngine.COLLISION_BOTH_AXES) {
 
                     super.stop();
-                    if(temp_dy > 0) {
-                        is_jumping = false;
-                    }
                 }
             }
         } else if (getState() == Mortal.STATE_TRIGGER_DYING) {
             super.setVelocityX(0.0f);
             super.setVelocityY(0.0f);
         }
-
-
+        this.setAnimation(AnimationPicker.pickAnimation(animations, this));
     }
 
     private EnemyMove simulateInput(TileMap context, Long time_elapsed) {
@@ -228,12 +204,14 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
 
                 float origin_x = getX();
                 float origin_y = getY();
-                float dest_x = (float)master.snoopOnPlayerPosition().getX();
-                float dest_y = (float)master.snoopOnPlayerPosition().getY();
+                float dest_x = master.snoopOnPlayerPosition().x;
+                float dest_y = master.snoopOnPlayerPosition().y;
                 Velocity temp_proj_velocity = new Velocity();
                 Animation proj_anim = new Animation();
-                proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
-                Projectile proj = new Projectile(proj_anim, Projectile.ORIGIN_ENEMY);
+                proj_anim.loadAnimationFromSheet("images/sprites/enemy_projectile_static.png",1, 1, 60);
+                Animation proj_dying_anim = new Animation();
+                proj_dying_anim.loadAnimationFromSheet("images/sprites/anim_enemy_projectile_dying.png", 10, 1, 60);
+                Projectile proj = new Projectile(proj_anim, proj_dying_anim, Projectile.ORIGIN_ENEMY);
                 proj.setX(origin_x);
                 proj.setY(origin_y);
                 double angle = temp_proj_velocity.getAngle(proj.getX(), proj.getY(), dest_x, dest_y);
@@ -252,7 +230,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
      */
     @Override
     public Rectangle.Float getCollisionBounds() {
-        Rectangle.Float collision_bounds = new Rectangle.Float(getX(), getY(), getWidth(), getHeight());
+        Rectangle.Float collision_bounds = new Rectangle.Float(getX() + 5, getY() + 5, getWidth() - 10, getHeight() - 5);
         return collision_bounds;
     }
 
@@ -267,13 +245,11 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
     @Override
     public void setX(float x) {
         super.setX(x);
-        ORIGIN_X = x;
     }
 
     @Override
     public void setY(float y) {
         super.setY(y);
-        ORIGIN_Y = y;
     }
 
     @Override

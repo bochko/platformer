@@ -31,8 +31,17 @@ public abstract class GameCore extends JFrame implements KeyListener {
     
     private long frames;				// Used to calculate frames per second (FPS)
     private Window win;					// Window object used to handle the display
-    
+
+    public BufferedImage getBuffer() {
+        return buffer;
+    }
+
     private BufferedImage buffer=null;	// buffer is used as a buffered image for drawing offscreen
+
+    public Graphics2D getBg() {
+        return bg;
+    }
+
     private Graphics2D bg=null;    		// The virtual Graphics2D device associated with the above image
     
     
@@ -142,8 +151,8 @@ public abstract class GameCore extends JFrame implements KeyListener {
      * @return A reference to the Image object that was loaded
      */
     public Image loadImage(String fileName) 
-    { 
-    	return new ImageIcon(fileName).getImage(); 
+    {
+        return new ImageIcon(fileName).getImage();
     }
 
     /**
@@ -203,7 +212,7 @@ public abstract class GameCore extends JFrame implements KeyListener {
 
             // take a nap
             try {
-                Thread.sleep(5);
+                Thread.sleep(10);
             }
             catch (InterruptedException ex) { }
         }

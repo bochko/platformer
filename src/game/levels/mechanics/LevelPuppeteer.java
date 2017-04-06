@@ -10,6 +10,7 @@ import game.actors.projectiles.Projectile;
 import game.core.PIDController;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
+import game.subsidiaries.audio.SoundBundle;
 import game.subsidiaries.visuals.HeadsUpDisplay;
 import game.subsidiaries.visuals.SpriteMap;
 
@@ -28,8 +29,11 @@ public class LevelPuppeteer {
     private PlayerEntity playerEntity;
     private HeadsUpDisplay hud;
     private LinkedList<Sprite> sprites_list;
+    private SoundBundle level_sounds;
 
     private float scale_factor;
+    private int x_offset;
+    private int y_offset;
 
     /***
      *
@@ -50,6 +54,21 @@ public class LevelPuppeteer {
         this.hud = hud;
         this.sprites_list = new LinkedList<>();
         this.scale_factor = scale_factor;
+        x_offset = 0;
+        y_offset = 0;
+    }
+
+    public void informPuppeteerOffsets(int x, int y) {
+        x_offset = x;
+        y_offset = y;
+    }
+
+    public int getOffsetX() {
+        return x_offset;
+    }
+
+    public int getOffsetY() {
+        return y_offset;
     }
 
     /***
@@ -68,10 +87,9 @@ public class LevelPuppeteer {
      * Self-renders all sprite in scene in order enemies -> consumables -> projectiles -> player
      * PlayerEntity ends up on top in this hierarchy. Synchronize-Block-s list containers in order to avoid Concurrent Modification
      * @param g graphics context to draw on
-     * @param x_offset the x-offset of the scene
-     * @param y_offset the y-offset of the scene
+
      */
-    public void enforceSpriteRender(Graphics2D g, int x_offset, int y_offset) {
+    public void enforceSpriteRender(Graphics2D g) {
         synchronized (sprites_list) {
 
             for (int i = 0; i < sprites_list.size(); i++) {
@@ -84,20 +102,18 @@ public class LevelPuppeteer {
     /***
      *
      * @param g
-     * @param x_offset
-     * @param y_offset
      */
-    public void enforceTileMapRender(Graphics2D g, int x_offset, int y_offset) {
+    public void enforceTileMapRender(Graphics2D g) {
+
         tilemap.draw(g, x_offset, y_offset);
     }
 
     /***
      *
      * @param g
-     * @param x_offset
-     * @param y_offset
+
      */
-    public void enforceForedropRender(Graphics2D g, int x_offset, int y_offset) {
+    public void enforceForedropRender(Graphics2D g ){
         foredrop.draw(g, x_offset, y_offset);
     }
 
@@ -105,17 +121,19 @@ public class LevelPuppeteer {
         hud.draw(g);
     }
 
+    public void enforceBackgroundRender(Graphics2D g) {
+        g.drawImage(levelbackground, 0, 0, null);
+    }
+
     /***
      *
      * @param g
-     * @param x_offset
-     * @param y_offset
      */
-    public void enforceBackdropRender(Graphics2D g, int x_offset, int y_offset) {
+    public void enforceBackdropRender(Graphics2D g) {
         backdrop.draw(g, x_offset, y_offset);
     }
 
-    public void enforcePlayerRender(Graphics2D g, int x_offset, int y_offset) {
+    public void enforcePlayerRender(Graphics2D g) {
         playerEntity.setOffsets(x_offset, y_offset);
         playerEntity.draw(g);
     }
@@ -195,31 +213,41 @@ public class LevelPuppeteer {
     private void crosscheckSprites() {
         synchronized (sprites_list) {
             for(int i = 0; i < sprites_list.size(); i++) {
-                if (sprites_list.get(i) instanceof Collidable) {
+                Sprite sprite = sprites_list.get(i);
+                if (sprite instanceof Collidable) {
                     // check if player is colliding with enemy projectiles
-                    if(CollisionEngine.spriteToSpriteCollision(playerEntity, ((Collidable) sprites_list.get(i)))) {
-                        if (sprites_list.get(i) instanceof Projectile) {
-                            if (((Projectile) sprites_list.get(i)).getSignature() == Projectile.ORIGIN_ENEMY) {
+                    if(CollisionEngine.spriteToSpriteCollision(playerEntity, ((Collidable) sprite))) {
+                        if (sprite instanceof Projectile) {
+                            if (((Projectile) sprite).getSignature() == Projectile.ORIGIN_ENEMY) {
                                 playerEntity.applyHitByEnemyProjectile();
+                                ((Projectile) sprites_list.get(i)).die();
                             }
                         }
                     }
                     // check if player is colliding with an enemy
-                    if(CollisionEngine.spriteToSpriteCollision(playerEntity, ((Collidable) sprites_list.get(i)))) {
-                        if (sprites_list.get(i) instanceof EnemyEntity) {
+                    if (sprite instanceof EnemyEntity) {
+                        if(CollisionEngine.spriteToSpriteCollision(playerEntity, ((Collidable) sprite))) {
+                            if(((Mortal) sprite).getState() == Mortal.STATE_ALIVE)
                             playerEntity.applyHitByEnemyEntity();
                         }
                     }
                     // check if an enemy is being hit by a player projectile
-                    if (sprites_list.get(i) instanceof EnemyEntity && sprites_list.get(i) instanceof Mortal) {
+                    if (sprite instanceof EnemyEntity && sprite instanceof Mortal) {
                         for (int p = 0; p < sprites_list.size(); p++) {
                             if(CollisionEngine.spriteToSpriteCollision(((Collidable) sprites_list.get(i)), ((Collidable) sprites_list.get(p)))) {
                                 if(sprites_list.get(p) instanceof Projectile) {
                                     if (((Projectile) sprites_list.get(p)).getSignature() == Projectile.ORIGIN_PLAYER) {
                                         ((Mortal) sprites_list.get(i)).die();
+                                        ((Projectile) sprites_list.get(p)).die();
                                     }
                                 }
                             }
+                        }
+                    }
+                    // check if projectile is hitting the tilemap
+                    if (sprite instanceof Projectile && sprite instanceof Mortal && sprite instanceof Collidable) {
+                        if(CollisionEngine.simpleSpriteToMapCollision((Collidable) sprite, tilemap, 0f, 0f, 0L) != CollisionEngine.COLLISION_NONE) {
+                            ((Mortal) sprites_list.get(i)).die();
                         }
                     }
                 }
@@ -237,5 +265,9 @@ public class LevelPuppeteer {
 
     public Point.Float snoopOnPlayerPosition() {
         return new Point.Float(playerEntity.getX(), playerEntity.getY());
+    }
+
+    public void playSound(int key, boolean looping) {
+
     }
 }

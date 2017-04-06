@@ -30,11 +30,12 @@ public class Sound extends Thread {
 			clip.open(stream);
 			clip.start();
 			Thread.sleep(100);
-			while (clip.isRunning()) { Thread.sleep(100); }
+			while (clip.isRunning()) {
+				Thread.sleep(100);
+			}
 			clip.close();
 		}
 		catch (Exception e) {	}
 		finished = true;
-
 	}
 }

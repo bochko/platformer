@@ -10,6 +10,7 @@ import game.core.PIDController;
 import game.levels.mechanics.LevelPuppeteer;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
+import game.subsidiaries.animations.AnimationPicker;
 import game.subsidiaries.animations.EntityAnimationBundle;
 
 import java.awt.*;
@@ -28,6 +29,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     public static final int DEFAULT_BASE_DAMAGE = 25;
     public static final int DEFAULT_SPEED_MULTIPLIER = 2;
     public static final int PLAYER_MAX_HEALTH = 100;
+    public static final long PLAYER_DEFAULT_DAMAGE_TIMEGAP = 1250L;
 
     private int health_points;
 
@@ -41,10 +43,10 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
     private float damage_multiplier;
 
-    private Velocity movement_velocity;
-    private Velocity jumping_velocity;
+    private Velocity movement_velocity;;
     private LevelPuppeteer master;
     private EntityAnimationBundle animations;
+    private long damage_counter;
 
 
     /***
@@ -65,8 +67,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
         this.base_damage = PlayerEntity.DEFAULT_BASE_DAMAGE;
         // initialize movement_velocity class to use
         movement_velocity = new Velocity();
-        // create the collision bounds of the sprite
-        jumping_velocity = new Velocity();
+        damage_counter = PLAYER_DEFAULT_DAMAGE_TIMEGAP;
 
 
     }
@@ -88,20 +89,12 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
 
         float temp_dx = 0;
         float temp_dy = 0;
-        float curr_gravity_pull;
 
         if(this.getVelocityY() > 0) {
             is_jumping = true;
         }
 
         movement_velocity.setVelocity(0.0, 0.0);
-
-        /*if (up) {
-            movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 270);
-            temp_dx += (float)movement_velocity.getdx();
-            temp_dy += (float)movement_velocity.getdy();
-
-        }*/
 
         if (pidController.isRight()) {
             movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 0);
@@ -132,9 +125,6 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
             movement_velocity.setVelocity(gravity * time_elapsed, 90);
             temp_dy += (float) movement_velocity.getdy();
 
-
-
-
         int collision_type = CollisionEngine.simpleSpriteToMapCollision(this, context, temp_dx, super.getVelocityY() + temp_dy, time_elapsed);
         // Set sprite movement_velocity according to delta values calculated and collision type
         if (collision_type == CollisionEngine.COLLISION_NONE) {
@@ -163,10 +153,17 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
                 }
             }
         }
-
         if(pidController.isMouse_primary()) {
             expelProjectile(pidController.getMouseX(), pidController.getMouseY());
+            pidController.releaseMouseInput();
         }
+        this.setAnimation(AnimationPicker.pickAnimation(animations, this));
+    }
+
+    @Override
+    public void update(long time_elapsed) {
+        super.update(time_elapsed);
+        damage_counter -= time_elapsed;
     }
 
     /***
@@ -177,12 +174,14 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     public void expelProjectile(float mouse_x, float mouse_y) {
         float origin_x = getX();
         float origin_y = getY();
-        float dest_x = mouse_x/master.getScale_factor();
-        float dest_y = mouse_y/master.getScale_factor();
+        float dest_x = mouse_x/master.getScale_factor() - master.getOffsetX();
+        float dest_y = mouse_y/master.getScale_factor() - master.getOffsetY();
         Velocity temp_proj_velocity = new Velocity();
         Animation proj_anim = new Animation();
-        proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
-        Projectile proj = new Projectile(proj_anim, Projectile.ORIGIN_PLAYER);
+        proj_anim.loadAnimationFromSheet("images/sprites/player_projectile_static.png",1, 1, 60);
+        Animation proj_anim_dying = new Animation();
+        proj_anim_dying.loadAnimationFromSheet("images/sprites/anim_player_projectile_dying.png", 10, 1 ,60);
+        Projectile proj = new Projectile(proj_anim, proj_anim_dying, Projectile.ORIGIN_PLAYER);
         proj.setX(origin_x);
         proj.setY(origin_y);
         double angle = temp_proj_velocity.getAngle(proj.getX(), proj.getY(), dest_x, dest_y);
@@ -191,7 +190,6 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
         proj.setVelocityY((float)temp_proj_velocity.getdy());
         proj.show();
         master.conjureProjectile(proj);
-
     }
 
     /***
@@ -222,11 +220,18 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     }
 
     public void applyHitByEnemyProjectile() {
-        setHealth_points(getHealth_points() - 20);
+        if (damage_counter <= 0L) {
+            damage_counter = PLAYER_DEFAULT_DAMAGE_TIMEGAP;
+            setHealth_points(getHealth_points() - 10);
+        }
     }
 
     public void applyHitByEnemyEntity() {
-        setHealth_points(getHealth_points() - 1);
+        if (damage_counter <= 0L) {
+            setHealth_points(getHealth_points() - 10);
+            damage_counter = PLAYER_DEFAULT_DAMAGE_TIMEGAP;
+        }
+
     }
 
 

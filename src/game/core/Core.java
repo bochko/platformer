@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
 import java.awt.image.VolatileImage;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -62,7 +63,6 @@ public class Core extends GameCore
 
         Core gct = new Core();
         gct.init();
-        // Start in windowed mode with the given screen height and width
         gct.run(false, FRAME_WIDTH, FRAME_HEIGHT);
     }
 
@@ -97,22 +97,16 @@ public class Core extends GameCore
     public void draw(Graphics2D g)
     {
         super.paint(g); // calling super.paint NEEDS TO BE CALLED IN ORDER TO utilize the default rendering settings of JFrame, which include double buffering
+        BufferedImage non_accelerated_buffer = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        Graphics2D non_accelerated_graphics = non_accelerated_buffer.createGraphics();
+        non_accelerated_graphics.setClip(0, 0, getWidth(), getHeight());
 
-    	// First work out how much we need to shift the view 
-    	// in order to see where the playerEntity is.
-        int xo = 0;
-        int yo = 0;
-
-        VolatileImage accelerated_buffer = createVolatileImage(SCREEN_WIDTH, SCREEN_HEIGHT);
-        Graphics2D accelerated_graphics = accelerated_buffer.createGraphics();
-        accelerated_graphics.setClip(0, 0, getWidth(), getHeight());
-
-        level.draw(accelerated_graphics, xo, yo);
+        level.draw(non_accelerated_graphics);
 
         AffineTransform at = new AffineTransform();
         at.scale(scale, scale);
-        g.drawImage(accelerated_buffer, at, null);
-        accelerated_graphics.dispose();
+        g.drawImage(non_accelerated_buffer, at, null);
+        non_accelerated_graphics.dispose();
     }
 
     /**

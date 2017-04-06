@@ -379,8 +379,8 @@ public class SpriteMap
                 yc = yoff + r*tileHeight;
 
                 // Only draw the tile if it is on screen, otherwise go back round the loop
-                if (xc+tileWidth < 0 || xc >= rect.x + rect.width) continue;
-                if (yc+tileHeight < 0 || yc >= rect.y + rect.height) continue;
+                if (xc+tileWidth * 4 < 0 || xc >= rect.x + rect.width) continue; // modified with *4 to accommodate the biggest sprite
+                if (yc+tileHeight * 4 < 0 || yc >= rect.y + rect.height) continue; // modified to *4 to accommodate the biggest sprite
                 sprite.setOffsets(xc, yc);
                 sprite.draw(g);
             }
