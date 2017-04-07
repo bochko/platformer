@@ -16,14 +16,12 @@ public class HeadsUpDisplay {
     int current_health;
     int current_score;
     ImageIcon healthbar;
-    ImageIcon score;
 
 
-    public HeadsUpDisplay(int width, int height, String healthbar_path, String score_path, PlayerEntity player) {
+    public HeadsUpDisplay(int width, int height, String healthbar_path, PlayerEntity player) {
         screen_width = width;
         screen_height = height;
         healthbar = new ImageIcon(healthbar_path);
-        score = new ImageIcon(score_path);
         max_health = PlayerEntity.PLAYER_MAX_HEALTH;
         current_health = player.getHealth_points();
         current_score = 0;
@@ -42,8 +40,6 @@ public class HeadsUpDisplay {
             g.fillRect(46, 34, (int)bar_width, 22);
         }
         g.drawImage(healthbar.getImage(), 16, 28, null);
-        g.drawImage(score.getImage(), screen_width - score.getImage().getWidth(null) - 16,
-                 28, null);
     }
 
 }

@@ -212,7 +212,7 @@ public abstract class GameCore extends JFrame implements KeyListener {
 
             // take a nap
             try {
-                Thread.sleep(10);
+                Thread.sleep(15);
             }
             catch (InterruptedException ex) { }
         }

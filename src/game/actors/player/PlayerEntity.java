@@ -1,9 +1,6 @@
 package game.actors.player;
 
-import cairns.david.engine.Animation;
-import cairns.david.engine.Sprite;
-import cairns.david.engine.TileMap;
-import cairns.david.engine.Velocity;
+import cairns.david.engine.*;
 import game.actors.mechanics.Ambulatory;
 import game.actors.projectiles.Projectile;
 import game.core.PIDController;
@@ -30,6 +27,8 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     public static final int DEFAULT_SPEED_MULTIPLIER = 2;
     public static final int PLAYER_MAX_HEALTH = 100;
     public static final long PLAYER_DEFAULT_DAMAGE_TIMEGAP = 1250L;
+    public static final long PLAYER_DEFAULT_START_DELAY = 1000L;
+    public static final long PLAYER_SHOOT_DELAY = 500L;
 
     private int health_points;
 
@@ -47,6 +46,8 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     private LevelPuppeteer master;
     private EntityAnimationBundle animations;
     private long damage_counter;
+    private long start_delay;
+    private long projectile_timer;
 
 
     /***
@@ -68,6 +69,8 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
         // initialize movement_velocity class to use
         movement_velocity = new Velocity();
         damage_counter = PLAYER_DEFAULT_DAMAGE_TIMEGAP;
+        start_delay = PLAYER_DEFAULT_START_DELAY;
+        projectile_timer = PLAYER_SHOOT_DELAY;
 
 
     }
@@ -86,6 +89,8 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
      */
     @SuppressWarnings("Duplicates")
     public void buildMovement(TileMap context, Long time_elapsed, float gravity, PIDController pidController) {
+
+        if (start_delay > 0) return;
 
         float temp_dx = 0;
         float temp_dy = 0;
@@ -108,14 +113,10 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
             temp_dy += (float) movement_velocity.getdy();
         }
 
-        if (pidController.isDown()) {
-            movement_velocity.setVelocity(getBase_movement_speed() * getSpeed_multiplier(), 90);
-            temp_dx += (float) movement_velocity.getdx();
-            temp_dy += (float) movement_velocity.getdy();
-        }
-
         if (pidController.isUp()) {
             if(!is_jumping) {
+                Sound jump = new Sound("sounds/sfx/player_jump.wav");
+                jump.start();
                 is_jumping = true;
                 movement_velocity.setVelocity(0.2 * getSpeed_multiplier(), 270);
                 temp_dy += (float) movement_velocity.getdy();
@@ -153,9 +154,12 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
                 }
             }
         }
-        if(pidController.isMouse_primary()) {
+        if(pidController.isMouse_primary() && projectile_timer <= 0) {
+            Sound projectile_sound = new Sound("sounds/sfx/player_shoot.wav");
+            projectile_sound.start();
             expelProjectile(pidController.getMouseX(), pidController.getMouseY());
             pidController.releaseMouseInput();
+            projectile_timer = PLAYER_SHOOT_DELAY;
         }
         this.setAnimation(AnimationPicker.pickAnimation(animations, this));
     }
@@ -164,6 +168,8 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
     public void update(long time_elapsed) {
         super.update(time_elapsed);
         damage_counter -= time_elapsed;
+        start_delay -= time_elapsed;
+        projectile_timer -= time_elapsed;
     }
 
     /***
@@ -172,6 +178,7 @@ public class PlayerEntity extends Sprite implements Collidable, Ambulatory {
      * @param mouse_y the y position of the mouse, respective to the graphics2D context
      */
     public void expelProjectile(float mouse_x, float mouse_y) {
+        System.out.println("x: " + (int)mouse_x + " y: " + (int)mouse_y);
         float origin_x = getX();
         float origin_y = getY();
         float dest_x = mouse_x/master.getScale_factor() - master.getOffsetX();

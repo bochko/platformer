@@ -1,57 +1,50 @@
 package game.core;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.VolatileImage;
-import java.util.Iterator;
-import java.util.ListIterator;
+import java.lang.reflect.Constructor;
 
 import cairns.david.engine.*;
-import game.actors.projectiles.Projectile;
+import game.levels.mechanics.Level;
+import game.levels.mechanics.LevelBundle;
 import game.levels.premade.LevelOne;
+import game.levels.premade.LevelTwo;
+import game.subsidiaries.audio.LoopingSound;
 
-import javax.swing.*;
 
-// Game demonstrates how we can override the GameCore class
-// to create our own 'game'. We usually need to implement at
-// least 'draw' and 'update' (not including any local event handling)
-// to begin the process. You should also add code to the 'init'
-// method that will initialise event handlers etc. By default GameCore
-// will handle the 'Escape' key to quit the game but you should
-// override this with your own event handler.
-
-/**
- * @author David Cairns
- *
- */
 @SuppressWarnings("serial")
-
 public class Core extends GameCore
 {
+
 	// Useful game constants
-	static int SCREEN_WIDTH = 512;
-    static int SCREEN_HEIGHT = 384;
-
-    static int FRAME_WIDTH = 1024;
-    static int FRAME_HEIGHT = 768;
-
-    static float scale = 0;
-    
-    // Game controller flags
-    private boolean player_up = false;
-    private boolean player_down = false;
-    private boolean player_left = false;
-    private boolean player_right = false;
+	private static final int SCREEN_WIDTH = 512;
+    private static final int SCREEN_HEIGHT = 384;
+    private static final int FRAME_WIDTH = 1024;
+    private static final int FRAME_HEIGHT = 768;
+    private float scale = 0;
 
     // PID Controller
     private static final PIDController pidController = new PIDController();
 
-    // Level
-    private LevelOne level;
+    // Game soundtrack
+    private LoopingSound soundtrack;
+
+    // Levels
+    private LevelBundle levels;
+    private Level level1;
+    private Level level2;
+
+    // Current level
+    private Level level;
+    private static int current_level_key = LevelBundle.MENU_INDEX;
+
+    // Scalable buffer
+    private BufferedImage non_accelerated_buffer;
+    // Graphics buffer
+    private Graphics2D non_accelerated_graphics;
+    // Transform to be configured from scale
+    AffineTransform at;
 
     /**
 	 * The obligatory main method that creates
@@ -64,6 +57,7 @@ public class Core extends GameCore
         Core gct = new Core();
         gct.init();
         gct.run(false, FRAME_WIDTH, FRAME_HEIGHT);
+
     }
 
     /**
@@ -73,11 +67,18 @@ public class Core extends GameCore
     public void init()
     {
         scale = FRAME_WIDTH/SCREEN_WIDTH;
-        // set cursor to a simple crosshair
+        // add levels to the bundle
+        levels = new LevelBundle();
+        level2 = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+        level1 = new LevelTwo(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+        levels.addLevel(LevelBundle.MENU_INDEX, level1);
+        levels.addLevel(LevelBundle.MENU_INDEX + 1, level2);
         setCursor(Cursor.CROSSHAIR_CURSOR);
-        // add itself as a mouse listener
         this.addMouseListener(pidController);
         this.addKeyListener(pidController);
+        non_accelerated_buffer = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
+        soundtrack = new LoopingSound("sounds/soundtrack/mainmenu.wav");
+        soundtrack.start();
         initializeLevel();
     }
 
@@ -87,7 +88,12 @@ public class Core extends GameCore
      * the game.
      */
     public void initializeLevel() {
-        level = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+            level = levels.getLevel(current_level_key);
+            level.setSignal(LevelBundle.SIGNAL_CONTINUE);
+    }
+
+    public void restartLevel() {
+            level.reinitialize(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
     }
     
     /**
@@ -97,16 +103,32 @@ public class Core extends GameCore
     public void draw(Graphics2D g)
     {
         super.paint(g); // calling super.paint NEEDS TO BE CALLED IN ORDER TO utilize the default rendering settings of JFrame, which include double buffering
-        BufferedImage non_accelerated_buffer = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
-        Graphics2D non_accelerated_graphics = non_accelerated_buffer.createGraphics();
+        non_accelerated_graphics = non_accelerated_buffer.createGraphics();
         non_accelerated_graphics.setClip(0, 0, getWidth(), getHeight());
-
-        level.draw(non_accelerated_graphics);
-
-        AffineTransform at = new AffineTransform();
+        at = new AffineTransform();
+        non_accelerated_graphics.clearRect(0, 0, getWidth(), getHeight());
+        try {
+            level.draw(non_accelerated_graphics);
+        } catch (Exception e) {
+            System.out.println("Level couldn't load in time for draw");
+        }
         at.scale(scale, scale);
         g.drawImage(non_accelerated_buffer, at, null);
-        non_accelerated_graphics.dispose();
+
+        //read level1 signal, delivered by the signal sprite
+        if(level.readSignal() != LevelBundle.SIGNAL_CONTINUE) {
+            if(level.readSignal() == LevelBundle.SIGNAL_MAIN_MENU) {
+                current_level_key = LevelBundle.MENU_INDEX;
+                initializeLevel();
+            } else if (level.readSignal() == LevelBundle.SIGNAL_NEXT_LEVEL) {
+                current_level_key += 1;
+                initializeLevel();
+            } else if (level.readSignal() == LevelBundle.SIGNAL_RESTART_LEVEL) {
+                Sound restart = new Sound("sounds/sfx/level_restart.wav");
+                restart.start();
+                restartLevel();
+            }
+        }
     }
 
     /**
@@ -118,47 +140,4 @@ public class Core extends GameCore
     {
         level.update(elapsed, pidController);
     }
-
-    /**
-     * Checks and handles collisions with the tile map for the
-     * given sprite 's'. Initial functionality is limited...
-     */
-    /*public void handleTileMapCollisions(Sprite s, long elapsed)
-    {
-    	// This method should check actual tile map collisions. For
-    	// now it just checks if the playerEntity has gone off the bottom
-    	// of the tile map.
-    	
-        if (playerEntity.getY() + playerEntity.getHeight() > tmap.getPixelHeight())
-        {
-        	// Put the playerEntity back on the map
-        	playerEntity.setY(tmap.getPixelHeight() - playerEntity.getHeight());
-        	
-        	// and make them bounce
-        	playerEntity.setVelocityY(-playerEntity.getVelocityY() * (0.03f * elapsed));
-        }
-    }*/
-
-   // @Override
-   // public void mouseClicked(MouseEvent e) {
-        /*int x = (int) (e.getX()/scale);
-        int y = (int) (e.getY()/scale);
-        System.out.println("Cursor pos: " + x + y);
-        Animation proj_anim = new Animation();
-        proj_anim.loadAnimationFromSheet("images/green_alien_enemy.png",1, 1, 60);
-        Projectile proj = new Projectile(proj_anim);
-        proj.setX(playerEntity.getX());
-        proj.setY(playerEntity.getY());
-        double angle = xydiffcalc.getAngle(proj.getX(), proj.getY(), x, y);
-        xydiffcalc.setVelocity(0.5f, angle);
-        proj.setVelocityX((float)xydiffcalc.getdx());
-        proj.setVelocityY((float)xydiffcalc.getdy());
-        proj.show();
-
-        synchronized (projectiles) {
-            projectiles.add(proj);
-        }*/
-    //}
-
-
 }

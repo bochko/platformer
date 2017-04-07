@@ -28,6 +28,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
     public static final long PROJECTILE_TIMER_DEFAULT = 1500L;
     public static final long DEATH_TIMER_DEFAULT = 2000L;
     public static final float BASE_MOVEMENT_SPEED_DEFAULT = 0.4f;
+    public static final long ENEMY_DEFAULT_START_DELAY = 1000L;
     private int state;
     private int last_movement = EnemyMove.ENEMY_NO_MOVEMENT;
     private float base_movement_speed;
@@ -41,6 +42,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
     private Velocity jumping_velocity;
     private LevelPuppeteer master;
     private EntityAnimationBundle animations;
+    private long start_delay;
 
     /***
      * Creates a new EnemyEntity object with the specified Animation,
@@ -63,6 +65,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
         state = Mortal.STATE_ALIVE;
         projectile_timer =
         death_timer = EnemyEntity.DEATH_TIMER_DEFAULT;
+        start_delay = ENEMY_DEFAULT_START_DELAY;
 
     }
 
@@ -80,6 +83,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
      */
     @SuppressWarnings("Duplicates")
     public void buildMovement(TileMap context, Long time_elapsed, float gravity, PIDController pidController) {
+        if(start_delay > 0) return;
         // if sprite is dying
         if (getState() == Mortal.STATE_TRIGGER_DYING || getState() == Mortal.STATE_DYING) {
             setVelocityY(0.0f);
@@ -125,7 +129,9 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
             super.setVelocityX(0.0f);
             super.setVelocityY(0.0f);
         }
+
         this.setAnimation(AnimationPicker.pickAnimation(animations, this));
+
     }
 
     private EnemyMove simulateInput(TileMap context, Long time_elapsed) {
@@ -181,6 +187,7 @@ public class EnemyEntity extends Sprite implements Collidable, Ambulatory, Morta
     @Override
     public void update(long time_elapsed) {
         super.update(time_elapsed);
+        start_delay -= time_elapsed;
         if (getState() == Mortal.STATE_ALIVE) {
             projectile_timer -= time_elapsed;
             expelTimedProjectile();

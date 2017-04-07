@@ -5,12 +5,12 @@ import game.actors.enemy.EnemyEntity;
 
 import cairns.david.engine.*;
 import game.actors.mechanics.Mortal;
+import game.actors.mechanics.SignalSprite;
 import game.actors.player.PlayerEntity;
 import game.actors.projectiles.Projectile;
 import game.core.PIDController;
 import game.physics.Collidable;
 import game.physics.CollisionEngine;
-import game.subsidiaries.audio.SoundBundle;
 import game.subsidiaries.visuals.HeadsUpDisplay;
 import game.subsidiaries.visuals.SpriteMap;
 
@@ -29,7 +29,7 @@ public class LevelPuppeteer {
     private PlayerEntity playerEntity;
     private HeadsUpDisplay hud;
     private LinkedList<Sprite> sprites_list;
-    private SoundBundle level_sounds;
+    private int signal;
 
     private float scale_factor;
     private int x_offset;
@@ -54,6 +54,7 @@ public class LevelPuppeteer {
         this.hud = hud;
         this.sprites_list = new LinkedList<>();
         this.scale_factor = scale_factor;
+        this.signal = LevelBundle.SIGNAL_CONTINUE;
         x_offset = 0;
         y_offset = 0;
     }
@@ -118,6 +119,7 @@ public class LevelPuppeteer {
     }
 
     public void enforceHUDRender(Graphics2D g) {
+
         hud.draw(g);
     }
 
@@ -142,14 +144,16 @@ public class LevelPuppeteer {
      * @param time_elapsed
      */
     public void updateAll(long time_elapsed) {
-            purgeDeadMortals();
-            crosscheckSprites();
             playerEntity.update(time_elapsed);
+            updateEntities(time_elapsed);
             foredrop.updateDecorativeSprites(time_elapsed);
             backdrop.updateDecorativeSprites(time_elapsed);
-            updateEntities(time_elapsed);
+            purgeDeadMortals();
+            crosscheckSprites();
             hud.update(playerEntity);
-
+            if(playerEntity.getHealth_points() <= 0) {
+                this.setSignal(LevelBundle.SIGNAL_RESTART_LEVEL);
+            }
     }
 
     /***
@@ -231,14 +235,24 @@ public class LevelPuppeteer {
                             playerEntity.applyHitByEnemyEntity();
                         }
                     }
+                    // check if player is colliding with any SIGNAL SPRITES
+                    if (sprite instanceof SignalSprite) {
+                        if(CollisionEngine.spriteToSpriteCollision(playerEntity, ((Collidable) sprite))) {
+                            int new_signal = ((SignalSprite) sprite).getSignal();
+                            this.setSignal(new_signal);
+                            System.out.println("signal changed");
+                        }
+                    }
                     // check if an enemy is being hit by a player projectile
                     if (sprite instanceof EnemyEntity && sprite instanceof Mortal) {
                         for (int p = 0; p < sprites_list.size(); p++) {
                             if(CollisionEngine.spriteToSpriteCollision(((Collidable) sprites_list.get(i)), ((Collidable) sprites_list.get(p)))) {
                                 if(sprites_list.get(p) instanceof Projectile) {
-                                    if (((Projectile) sprites_list.get(p)).getSignature() == Projectile.ORIGIN_PLAYER) {
+                                    if (((Projectile) sprites_list.get(p)).getSignature() == Projectile.ORIGIN_PLAYER && ((EnemyEntity) sprite).getState() == Mortal.STATE_ALIVE) {
                                         ((Mortal) sprites_list.get(i)).die();
                                         ((Projectile) sprites_list.get(p)).die();
+                                        Sound die = new Sound("sounds/sfx/enemy_die.wav");
+                                        die.start();
                                     }
                                 }
                             }
@@ -269,5 +283,13 @@ public class LevelPuppeteer {
 
     public void playSound(int key, boolean looping) {
 
+    }
+
+    public void setSignal(int signal) {
+        this.signal = signal;
+    }
+
+    public int readSignal() {
+        return signal;
     }
 }

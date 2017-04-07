@@ -33,6 +33,8 @@ public class AnimationPicker {
                 if(!entity.getAnimation().equals(bundle.getPlayerAnimation(EntityAnimationBundle.PLAYER_ANIM_JUMP)))
                 returnAnimation = bundle.getPlayerAnimation(EntityAnimationBundle.PLAYER_ANIM_JUMP);
             }
+        } else {
+            returnAnimation = bundle.getPlayerAnimation(EntityAnimationBundle.PLAYER_ANIM_IDLE);
         }
         return returnAnimation;
     }

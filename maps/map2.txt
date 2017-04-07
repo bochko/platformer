@@ -1,0 +1,52 @@
+32 32 32 32
+// The first line should contain the width and height of the
+// mag and the width and height of each tile. A list of character to
+// tile magings is then grovided where each character is greceded ky a
+// # character. The dot character always defaults to a klank sgace
+// Note that the referenced files should ke in the same directory as the
+// tile map.
+#a=tile_right_powercore_wall.png
+#b=tile_bot_right_powercore_wall.png
+#c=tile_bot_left_powercore_wall.png
+#d=tile_left_powercore_wall.png
+#e=tile_left_generic_wall.png
+#f=tile_mid_generic_wall.png
+#g=tile_right_generic_wall.png
+#h=tile_mid_metalplate_wall.png
+#i=tile_bot_metalplate_wall.png
+#j=tile_mid_computer_wall.png
+#k=tile_mid_mesh_wall.png
+// The actual tile map is preceded ky the #map line
+#map
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
+h.............................cb
+h......a......................da
+h.....hffff.....k.............cb
+hikkkkhfhhfffhhhk.............da
+hkkkkkkkkkk.....kh............cb
+h.....a.........khh...........da
+h.....a..........hhhh..h.......k
+h.....a................iiiijiiii
+da....a................hhhhhhhhh
+cb.............................i
+da.............................i
+hhh..jkkkkkkhhhjkjkkkkkkkkkkkkki
+i....ihhhhhhhhhhhhhhhhhhhhhhhhhh
+i....ihhhhhhhhhhhhhjjhhhhhhhhhhh
+i....ijkhhhhhhhhhhhhhhhhhhhhhhhh
+i....i......................ihhh
+i..hhi......................ihhh
+i...........................ihhh
+ikkkk...ikkkkkkk............ihhh
+i......ihhhhhhkkf..........ihhhh
+i.....ikkkkhkhhkkf........ijjhhh
+ia...ijjhkhkjkkkkkffffffffhhhhhh
+ia...iiiikkkk...da..cb...cb....h
+ia...iiiiiik....cb..cb...cb....h
+iah...hhhhk.....da..da.........h
+iah....hkk......cb..da.........h
+ikkkk...h...........da.........h
+a..............................h
+a...kkkkkkk....................h
+a..............................h
+iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
