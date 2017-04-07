@@ -197,7 +197,7 @@ public class LevelTwo implements Level {
         anim_end_level_sprite = new Animation();
         anim_end_level_sprite.loadAnimationFromSheet("images/sprites/consumable_speed.png", 10, 1, 120);
         end_level_sprite = new SignalSprite(anim_end_level_sprite, LevelBundle.SIGNAL_NEXT_LEVEL);
-        end_level_sprite.setX(990);
+        end_level_sprite.setX(950);
         end_level_sprite.setY(960);
         end_level_sprite.setVelocityX(0.0f);
         end_level_sprite.setVelocityY(0.0f);
@@ -209,6 +209,11 @@ public class LevelTwo implements Level {
         // initialize puppeteer and surrender sprites to it
         levelPuppeteer = new LevelPuppeteer(tmap, foredrop_tmap, backdrop_tmap, background, playerEntity, hud, scale);
         initializePuppeteer();
+    }
+
+    @Override
+    public void setController(PIDController controller) {
+        return;
     }
 
     private void initializePuppeteer() {

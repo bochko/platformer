@@ -14,6 +14,7 @@ public interface Level {
     int LEVEL_SIGNAL_RESUME = 55555;
 
     void reinitialize(int width, int height, float scale);
+    void setController(PIDController controller);
     void update(Long time_elapsed, PIDController pidController);
     void draw(Graphics2D g);
     void setSignal(int signalContinue);

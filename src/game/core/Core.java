@@ -8,6 +8,8 @@ import java.lang.reflect.Constructor;
 import cairns.david.engine.*;
 import game.levels.mechanics.Level;
 import game.levels.mechanics.LevelBundle;
+import game.levels.premade.LevelEnd;
+import game.levels.premade.LevelMenu;
 import game.levels.premade.LevelOne;
 import game.levels.premade.LevelTwo;
 import game.subsidiaries.audio.LoopingSound;
@@ -32,8 +34,10 @@ public class Core extends GameCore
 
     // Levels
     private LevelBundle levels;
+    private Level level_menu;
     private Level level1;
     private Level level2;
+    private Level level_end;
 
     // Current level
     private Level level;
@@ -66,16 +70,20 @@ public class Core extends GameCore
      */
     public void init()
     {
-        scale = FRAME_WIDTH/SCREEN_WIDTH;
-        // add levels to the bundle
-        levels = new LevelBundle();
-        level2 = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
-        level1 = new LevelTwo(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
-        levels.addLevel(LevelBundle.MENU_INDEX, level1);
-        levels.addLevel(LevelBundle.MENU_INDEX + 1, level2);
         setCursor(Cursor.CROSSHAIR_CURSOR);
         this.addMouseListener(pidController);
         this.addKeyListener(pidController);
+        scale = FRAME_WIDTH/SCREEN_WIDTH;
+        // add levels to the bundle
+        levels = new LevelBundle();
+        level_menu = new LevelMenu(pidController);
+        level1 = new LevelOne(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+        level2 = new LevelTwo(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+        level_end = new LevelEnd();
+        levels.addLevel(LevelBundle.MENU_INDEX, level_menu);
+        levels.addLevel(LevelBundle.MENU_INDEX + 1, level1);
+        levels.addLevel(LevelBundle.MENU_INDEX + 2, level2);
+        levels.addLevel(LevelBundle.MENU_INDEX + 3, level_end);
         non_accelerated_buffer = new BufferedImage(SCREEN_WIDTH, SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
         soundtrack = new LoopingSound("sounds/soundtrack/mainmenu.wav");
         soundtrack.start();
@@ -90,10 +98,12 @@ public class Core extends GameCore
     public void initializeLevel() {
             level = levels.getLevel(current_level_key);
             level.setSignal(LevelBundle.SIGNAL_CONTINUE);
+            restartLevel();
     }
 
     public void restartLevel() {
-            level.reinitialize(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+        level.reinitialize(SCREEN_WIDTH, SCREEN_HEIGHT, scale);
+        level.setController(pidController);
     }
     
     /**

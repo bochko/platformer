@@ -209,6 +209,11 @@ public class LevelOne implements Level {
         initializePuppeteer();
     }
 
+    @Override
+    public void setController(PIDController controller) {
+        return;
+    }
+
     private void initializePuppeteer() {
         playerEntity.setMaster(levelPuppeteer);
         enemy.setMaster(levelPuppeteer);
