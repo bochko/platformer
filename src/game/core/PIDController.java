@@ -115,20 +115,20 @@ public class PIDController implements MouseListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         if (key == KBD_ESCAPE) esc = true;
-        if (key == KBD_DOWN | key == KBD_DOWN_ALT) down = true;
-        if (key == KBD_UP | key == KBD_UP_ALT) up = true;
-        if (key == KBD_LEFT | key == KBD_LEFT_ALT) left = true;
-        if (key == KBD_RIGHT | key == KBD_RIGHT_ALT) right = true;
+        if (key == KBD_DOWN || key == KBD_DOWN_ALT) down = true;
+        if (key == KBD_UP || key == KBD_UP_ALT) up = true;
+        if (key == KBD_LEFT || key == KBD_LEFT_ALT) left = true;
+        if (key == KBD_RIGHT || key == KBD_RIGHT_ALT) right = true;
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         int key = e.getKeyCode();
         if (key == KBD_ESCAPE) esc = false;
-        if (key == KBD_DOWN | key == KBD_DOWN_ALT) down = false;
-        if (key == KBD_UP | key == KBD_UP_ALT) up = false;
-        if (key == KBD_LEFT | key == KBD_LEFT_ALT) left = false;
-        if (key == KBD_RIGHT | key == KBD_RIGHT_ALT) right = false;
+        if (key == KBD_DOWN || key == KBD_DOWN_ALT) down = false;
+        if (key == KBD_UP || key == KBD_UP_ALT) up = false;
+        if (key == KBD_LEFT || key == KBD_LEFT_ALT) left = false;
+        if (key == KBD_RIGHT || key == KBD_RIGHT_ALT) right = false;
     }
 
     @Override
