@@ -1,2 +1,2 @@
-# the_mothership
-Game I'm developing for CSCU9N6
+# University of Stirling / CSCU9N6
+Platformer game written in Java
